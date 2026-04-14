@@ -1,0 +1,83 @@
+
+.AdminPage{
+    text-align: center;
+    width: 100%;
+}
+.opciones{
+    width: 90%;
+    height: 60px;
+    margin: auto;
+    margin-top: 15px;
+    margin-bottom: 30px;
+    display: flex;
+    flex-direction: row;
+    background-color: #2FB4DE;
+    border-radius: 15px;
+
+    font-size: 15px;
+}
+.opcion{
+    flex: 1;
+    text-align: center;
+    align-content: center;
+    color: #fff;
+    border-radius: 15px;
+}
+.opcion:hover{
+    opacity: 0.7;
+    cursor: pointer;
+    background-color: #27a9d2;
+}
+.PedidosList_container{
+    width: 99%;
+    overflow-x: auto;
+    margin: 0;
+    max-height: 65vh;
+}
+.PedidosList{
+    display: grid;
+    width: fit-content;
+    height: fit-content;
+    grid-template-columns:  repeat(2 , 120px) 150px repeat(2 , 120px) 200px repeat(2, 150px) 250px 400px 150px 150px 400px;
+    background-color: #666;
+    gap: 1px;
+    border: 1px solid #666;
+}
+.columna{
+    font-size: 11px;
+    background-color: #ccc;
+    align-content: center;
+    min-height: 60px;
+}
+.celda{
+    font-size: 11px;
+    background-color: #fff;
+    align-content: center;
+    min-height: 60px;
+}
+.celda button{
+    font-size: 9px;
+    width: 90px; 
+    padding: 4px; 
+    margin-top: 7px;
+    margin-bottom: 0;
+    background-color: transparent;
+    border: 1px solid #999;
+    border-radius: 25px;
+}
+.celda button:hover{
+    background-color: #f0f0f0;
+    cursor: pointer;
+}
+.estatus_opcion{
+    color: #333;
+    margin: 3px 2px;
+    padding: 2px 0;
+    width: 95%;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+.estatus_opcion:hover{
+    background-color: #f5f5f5;
+    cursor: pointer;
+}

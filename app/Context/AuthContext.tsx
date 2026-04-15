@@ -66,4 +66,4 @@ export const useAuth = () => {
   if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
 };
-export const URL = "https://raqmarmx.com/api";
+export const URL = "https://api.raqmarmx.com";

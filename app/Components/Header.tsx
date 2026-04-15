@@ -37,7 +37,7 @@ const Header = ()=>{
                             className="boton_Header"   
                             style={{padding: "10px"}}
                         ><Menu className="icon" size={20}/></button>
-                        <Link href='/ProductosPageServer' className='boton_Header'  style={{marginLeft:"10px", width:"fit-content"}} >PRODUCTOS</Link>
+                        <Link href='/ProductosPage' className='boton_Header'  style={{marginLeft:"10px", width:"fit-content"}} >PRODUCTOS</Link>
 
                     </div>
                 )}

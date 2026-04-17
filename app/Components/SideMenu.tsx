@@ -287,10 +287,9 @@ const MenuCategoria = ({visible, onClose}: SubMenuProps)=>{
     }
 
     const lista = [
+        "Fragancia",
         "Lente Solar",
         "Lente Oftalmico",
-        "Fragancia",
-        "Fregancia Arabe",
         "Accesorio",
     ];
 

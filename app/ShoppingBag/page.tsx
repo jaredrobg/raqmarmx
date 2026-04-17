@@ -54,11 +54,14 @@ export const ShoppingBagModule = () => {
       name: item.nombreProducto,
       price: item.precio,
       quantity: item.quantity,
+      id: item.contentful_product_id
     })),
     ...(totalCarrito.costoEnvio > 0
       ? [{ name: "Costo de envío", price: totalCarrito.costoEnvio, quantity: 1 }]
       : [])
   ];
+  
+    //console.log("CartList: ", cartList);
 
   const handleCheckout = async () => {
     console.log("Iniciando checkout con items:", cartItems);

@@ -6,6 +6,7 @@ import { ChevronRight } from 'lucide-react';
 import { useState, useEffect, Children } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGlobal } from '../Context/GlobalContext';
+import { client } from '../lib/contentful';
 
 
 
@@ -162,8 +163,12 @@ export default function SideMenu(){
     )
 }
 
+
+
+
 const MenuMarca = ({visible, onClose}: SubMenuProps)=>{
     const router = useRouter();
+    const [marcas, setMarcas] = useState<string[]>([]);
 
     const slugify = (text: string) =>
     text
@@ -181,38 +186,35 @@ const MenuMarca = ({visible, onClose}: SubMenuProps)=>{
         router.push(`/ProductosFiltrados/${slug}`);
     }
 
-    const lista = [
-        "Al Haramain",
-        "Armani",
-        "Bharara",
-        "Cacharel",
-        "Calvin Klein",
-        "Carolina Herrera",
-        "Dolce & Gabbana",
-        "Ferrari",
-        "Givenchy",
-        "Hugo Boss",
-        "Lacoste",
-        "Lancome",
-        "Lattafa",
-        "Love Moschino",
-        "Michel Kors",
-        "Montblanc",
-        "Olive People",
-        "Paco Rabanne",
-        "Paris Hilton",
-        "Polo",
-        "Ralph Lauren",
-        "Rasasi",
-        "RayBan",
-        "Versace",
-        "Victoria's Secret",
-        "Yves Saint Laurent"
-    ];
+    useEffect(() => {
+        async function getMarcas() {
+            try {
+                const res = await client.getEntries({
+                    content_type: "producto", // 👈 usa tu content_type real
+                    select: ["fields.marca"], // solo traer marca (más rápido)
+                    limit: 1000
+                });
+
+                const marcasUnicas = Array.from(
+                    new Set(
+                        res.items
+                            .map((item: any) => item.fields.marca)
+                            .filter(Boolean) // quitar null/undefined
+                    )
+                );
+
+                setMarcas(marcasUnicas.sort());
+            } catch (err) {
+                console.error("Error obteniendo marcas:", err);
+            }
+        }
+
+        getMarcas();
+    }, []);
 
     return(
             <div className='SubMenu_container' style={{display: visible? 'flex': 'none'}}>
-                {lista.map((item, index)=>(
+                {marcas.map((item, index)=>(
                     <div 
                         key={index} 
                         className='SubMenu_option' 

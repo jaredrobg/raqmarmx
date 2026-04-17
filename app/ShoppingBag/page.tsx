@@ -139,7 +139,7 @@ export const ShoppingBagModule = () => {
             <p>
               Subtotal: {
                 totalCarrito.costoEnvio > 100 ?
-              (totalCarrito.totalPrecio - 150).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }) :
+              (totalCarrito.totalPrecio - 200).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }) :
               totalCarrito.totalPrecio
               .toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })
               }
@@ -151,7 +151,7 @@ export const ShoppingBagModule = () => {
             </p>
             {totalCarrito.costoEnvio > 100 && 
             <span style={{display: "block", color:"#292", fontSize:"10px", textAlign:"center"}}>
-              Realiza un pedido de $1,500 para tener envio GRATIS!
+              Realiza un pedido de $2,000 para tener envio GRATIS!
               </span>}
             <p>
               Total a Pagar: {totalCarrito.totalPrecio.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
@@ -309,7 +309,7 @@ const ShoppingBag = () => {
             <p>
               Subtotal: {
                 totalCarrito.costoEnvio > 100 ?
-              (totalCarrito.totalPrecio - 150).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }) :
+              (totalCarrito.totalPrecio - 200).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }) :
               totalCarrito.totalPrecio
               .toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })
               }
@@ -321,7 +321,7 @@ const ShoppingBag = () => {
             </p>
             {totalCarrito.costoEnvio > 100 && 
             <span style={{display: "block", color:"#292", fontSize:"10px", textAlign:"center"}}>
-              Realiza un pedido de $1,500 para tener envio GRATIS!
+              Realiza un pedido de $2,000 para tener envio GRATIS!
               </span>}
             <p>
               Total a Pagar: {totalCarrito.totalPrecio.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}

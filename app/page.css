@@ -427,6 +427,10 @@ a{
   border: 1px solid #999;
   margin-bottom: 8px;
   margin-right: 10px;
+  -webkit-appearance: none;
+  appearance: none;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
   /* SignupPage */
@@ -1456,4 +1460,23 @@ a{
 
   transform: rotate(25deg);
   pointer-events: none;
+}
+
+.dropdown {
+  position: absolute;
+  width: 100%;
+  background: white;
+  border: 1px solid #ccc;
+  z-index: 10;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.dropdown div {
+  padding: 8px;
+  cursor: pointer;
+}
+
+.dropdown div:hover {
+  background: #f0f0f0;
 }

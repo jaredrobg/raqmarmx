@@ -57,8 +57,8 @@ export async function POST(req: Request) {
     );
 
     // 🚚 lógica de envío
-    const COSTO_ENVIO = 150;
-    const ENVIO_GRATIS_DESDE = 1500;
+    const COSTO_ENVIO = 200;
+    const ENVIO_GRATIS_DESDE = 2000;
 
     if (total < ENVIO_GRATIS_DESDE) {
       line_items.push({

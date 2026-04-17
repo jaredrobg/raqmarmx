@@ -188,10 +188,22 @@ export const DireccionesComponent = ({selector, visible, setVisible, setDireccio
     )
 }
 
-export const RegistrarDireccion = ({visible, setVisible, setVisibleRegistrar}: {visible: boolean, setVisible: (visible: boolean) => void, setVisibleRegistrar: (visible: boolean) => void})=>{
+export const RegistrarDireccion = ({
+    visible,
+    setVisible,
+    setVisibleRegistrar
+}: {
+    visible: boolean,
+    setVisible: (visible: boolean) => void,
+    setVisibleRegistrar: (visible: boolean) => void
+})=>{
     const {user, URL} = useAuth();
+
     const [alias, setAlias] = useState('');
-    const [pais, setPais] = useState('');
+    const [pais, setPais] = useState('México');
+    const [paisInput, setPaisInput] = useState('México');
+    const [paisesFiltrados, setPaisesFiltrados] = useState<string[]>([]);
+
     const [nombreCompleto, setNombreCompleto] = useState('');
     const [estado, setEstado] = useState('');
     const [calle, setCalle] = useState('');
@@ -203,7 +215,55 @@ export const RegistrarDireccion = ({visible, setVisible, setVisibleRegistrar}: {
     const [colonia, setColonia] = useState('');
     const [municipio, setMunicipio] = useState('');
 
+    const [colonias, setColonias] = useState<string[]>([]);
+    const [loadingCP, setLoadingCP] = useState(false);
+
+    const paises = ["México", "Estados Unidos", "Colombia", "Argentina", "España"];
+
+    const isMexico = pais === "México";
+
     const isValid = alias && pais && nombreCompleto && calle && codigoPostal && telefono;
+
+    // Autocomplete país
+    useEffect(() => {
+        if (!paisInput) return setPaisesFiltrados([]);
+
+        const filtrados = paises.filter(p =>
+            p.toLowerCase().startsWith(paisInput.toLowerCase())
+        );
+
+        setPaisesFiltrados(filtrados);
+    }, [paisInput]);
+
+    // Solo México usa API de CP
+    useEffect(() => {
+        if (!isMexico || codigoPostal.length !== 5) return;
+
+        const fetchCP = async () => {
+            setLoadingCP(true);
+            try {
+                const res = await fetch(`https://sepomex.icalialabs.com/api/v1/zip_codes?zip_code=${codigoPostal}`);
+                const data = await res.json();
+
+                if (data.zip_codes.length > 0) {
+                    const info = data.zip_codes[0];
+
+                    setEstado(info.d_estado);
+                    setMunicipio(info.d_mnpio);
+
+                    const coloniasList = data.zip_codes.map((c:any)=>c.d_asenta);
+                    setColonias(coloniasList);
+                } else {
+                    setColonias([]);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+            setLoadingCP(false);
+        };
+
+        fetchCP();
+    }, [codigoPostal, isMexico]);
 
     const handleBack = ()=>{
         setVisible(true);
@@ -211,6 +271,7 @@ export const RegistrarDireccion = ({visible, setVisible, setVisibleRegistrar}: {
 
         setAlias('');
         setPais('');
+        setPaisInput('');
         setNombreCompleto('');
         setEstado('');
         setCalle('');
@@ -221,6 +282,7 @@ export const RegistrarDireccion = ({visible, setVisible, setVisibleRegistrar}: {
         setInstrucciones('');
         setColonia('');
         setMunicipio('');
+        setColonias([]);
     }
 
     const handleRegistro = async()=>{
@@ -246,126 +308,141 @@ export const RegistrarDireccion = ({visible, setVisible, setVisibleRegistrar}: {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 user_id: user?.internal_id,
-                direccion: direccion
+                direccion
             }),
         });
-
-        // const text = await response.text();
-        // console.log("Respuesta del servidor:", text);
 
         const data = await response.json();
         if(data.success){
             alert("Direccion registrada con exito!");
             handleBack();
         } else{
-            alert("Error registrando direccion: " + data.message);
-            console.log("Error registrando direccion: " + data.message);
+            alert("Error: " + data.message);
         }
     }
-    
 
     return(
-        <div className='RegistrarDireccion_container' 
-            style={{display: visible ? "block": "none"}}
-        >
-            <Button type='backButton' 
-                style={{color:"#555", position:"static"}}
-                onClick={handleBack}
-            >
+        <div className='RegistrarDireccion_container' style={{display: visible ? "block": "none"}}>
+
+            <Button type='backButton' onClick={handleBack}>
                 <ArrowLeft size={30}/>
             </Button>
+
             <h3>Registrar Direccion</h3>
-            <form className='RegistrarDireccion_form' onSubmit={(e)=>{ e.preventDefault(); handleRegistro();}}>
-                <label>Alias de Direccion*:</label>
-                <input 
-                    className='input-text' 
-                    type='text' 
-                    placeholder='Casa, Oficina, etc.'
-                    value={alias}
-                    onChange={(e)=>setAlias(e.target.value)}
-                />
-                <label>Pais*:</label>
-                <input 
-                    className='input-text' 
-                    type='text' 
-                    value={pais}
-                    onChange={(e)=>setPais(e.target.value)}
-                />
-                <label>Nombre Completo*:</label>
-                <input 
-                    className='input-text' 
-                    type='text' 
-                    value={nombreCompleto}
-                    onChange={(e)=>setNombreCompleto(e.target.value)}
-                />
-                <label>Estado</label>
-                <input 
-                    className='input-text' 
-                    type='text' 
-                    value={estado}
-                    onChange={(e)=>setEstado(e.target.value)}
-                />
-                <label>Calle, numero ext e int*:</label>
-                <input 
-                    className='input-text' 
-                    type='text' 
-                    value={calle}
-                    onChange={(e)=>setCalle(e.target.value)}
-                />
-                <label>Codigo Postal*:</label>
-                <input 
-                    className='input-text' 
-                    type='text' 
-                    value={codigoPostal}
-                    onChange={(e)=>setCodigoPostal(e.target.value)}
-                />
-                <label>Colonia</label>
-                <input 
-                    className='input-text' 
-                    type='text' 
-                    value={colonia}
-                    onChange={(e)=>setColonia(e.target.value)}
-                />
-                <label>Municipio</label>
-                <input 
-                    className='input-text' 
-                    type='text' 
-                    value={municipio}
-                    onChange={(e)=>setMunicipio(e.target.value)}
-                />
-                <label>Numero de Telefono</label>
-                <input 
-                    className='input-text' 
-                    type='text' 
-                    value={telefono}
-                    onChange={(e)=>setTelefono(e.target.value)}
-                />
-                <label>Entre Calles</label>
-                <div className='RegistrarDireccion_entreCalles'>
-                    <input 
-                        className='input-text' 
-                        type='text' 
-                        value={entreCalle1}
-                        onChange={(e)=>setEntreCalle1(e.target.value)}
-                    /> 
-                    <input 
-                        className='input-text' 
-                        type='text' 
-                        value={entreCalle2}
-                        onChange={(e)=>setEntreCalle2(e.target.value)}
+
+            <form  className='RegistrarDireccion_form' onSubmit={(e)=>{ e.preventDefault(); handleRegistro();}}>
+
+                <label>Alias*</label>
+                <input className='input-text' value={alias} onChange={(e)=>setAlias(e.target.value)} />
+
+                {/* PAIS */}
+                <label>Pais*</label>
+                <div style={{position:'relative'}}>
+                    <input
+                        className='input-text'
+                        style={{width: "80%"}}
+                        value={paisInput}
+                        onChange={(e)=>setPaisInput(e.target.value)}
+                        placeholder="Escribe país"
                     />
+
+                    {paisesFiltrados.length > 0 && (
+                        <div className="dropdown" >
+                            {paisesFiltrados.map((p, i)=>(
+                                <div key={i} onClick={()=>{
+                                    setPais(p);
+                                    setPaisInput(p);
+                                    setPaisesFiltrados([]);
+                                }}>
+                                    {p}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
-                <label>Instrucciones de Entrega</label>
-                <textarea className='input-text' placeholder='Ejemplo: Dejar en la puerta, llamar al llegar, etc.' 
+
+                {/*  MÉXICO */}
+                {isMexico ? (
+                    <>
+                        <label>Codigo Postal*</label>
+                        <input 
+                            className='input-text'
+                            value={codigoPostal}
+                            onChange={(e)=>setCodigoPostal(e.target.value)}
+                        />
+
+                        {loadingCP && <p>Cargando datos...</p>}
+
+                        <label>Estado</label>
+                        <input className='input-text' value={estado} disabled />
+
+                        <label>Municipio</label>
+                        <input className='input-text' value={municipio} disabled />
+
+                        <label>Colonia</label>
+                        {colonias.length > 0 ? (
+                            <select
+                                className='input-text'
+                                value={colonia}
+                                onChange={(e)=>setColonia(e.target.value)}
+                            >
+                                <option value="">Selecciona colonia</option>
+                                {colonias.map((col, i)=>(
+                                    <option key={i} value={col}>{col}</option>
+                                ))}
+                            </select>
+                        ) : (
+                            <input
+                                className='input-text'
+                                value={colonia}
+                                onChange={(e)=>setColonia(e.target.value)}
+                                placeholder="Colonia"
+                            />
+                        )}
+                    </>
+                ) : (
+                    <>
+                        {/* INTERNACIONAL */}
+                        <label>Estado / Provincia*</label>
+                        <input className='input-text' value={estado} onChange={(e)=>setEstado(e.target.value)} />
+
+                        <label>Ciudad / Municipio*</label>
+                        <input className='input-text' value={municipio} onChange={(e)=>setMunicipio(e.target.value)} />
+
+                        <label>Codigo Postal*</label>
+                        <input className='input-text' value={codigoPostal} onChange={(e)=>setCodigoPostal(e.target.value)} />
+
+                        <label>Colonia / Región</label>
+                        <input className='input-text' value={colonia} onChange={(e)=>setColonia(e.target.value)} />
+                    </>
+                )}
+
+                {/* COMUNES */}
+                <label>Nombre De Destinatario*</label>
+                <input className='input-text' value={nombreCompleto} onChange={(e)=>setNombreCompleto(e.target.value)} />
+
+                <label>Calle*</label>
+                <input className='input-text' value={calle} onChange={(e)=>setCalle(e.target.value)} />
+
+                <label>Telefono*</label>
+                <input className='input-text' value={telefono} onChange={(e)=>setTelefono(e.target.value)} />
+
+                <label>Entre Calles</label>
+                <div  className='RegistrarDireccion_entreCalles'>
+                    <input className='input-text' value={entreCalle1} onChange={(e)=>setEntreCalle1(e.target.value)} />
+                    <input className='input-text' value={entreCalle2} onChange={(e)=>setEntreCalle2(e.target.value)} />
+                </div>
+
+                <label>Instrucciones</label>
+                <textarea className='input-text'
                     value={instrucciones}
                     onChange={(e)=>setInstrucciones(e.target.value)}
                 />
-                <Button 
-                    type={isValid ?'submit':'disabled'} 
-                    style={{width:"150px", margin:"auto", marginTop:"20px"}}
-                >
+
+                <Button type={isValid ? 'submit' : 'disabled'}>
                     Guardar Direccion
                 </Button>
+
             </form>
         </div>
     )

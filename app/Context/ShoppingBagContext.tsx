@@ -163,9 +163,9 @@ export const ShoppingBagProvider = ({ children }: { children: ReactNode }) => {
     return acc;
   }, { totalCantidad: 0, totalPrecio: 0, costoEnvio: 0 });
 
-  if (totalCarrito.totalPrecio < 1500) {
-    totalCarrito.totalPrecio += 150; // costo de envío
-    totalCarrito.costoEnvio = 150;
+  if (totalCarrito.totalPrecio < 2000) {
+    totalCarrito.totalPrecio += 200; // costo de envío
+    totalCarrito.costoEnvio = 200;
   } else {
     totalCarrito.costoEnvio = 0;
   }

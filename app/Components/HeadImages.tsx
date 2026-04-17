@@ -6,6 +6,9 @@ export default function HeadImages() {
     "/Images/Head-Img-Mobile1.png",
     "/Images/Head-Img-Mobile2.png",
     "/Images/Head-Img-Mobile3.png",
+    "/Images/Head-Img-Mobile4.png",
+    "/Images/Head-Img-Mobile5.png",
+    "/Images/Head-Img-Mobile6.png",
   ];
 
   const [current, setCurrent] = useState(0);

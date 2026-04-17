@@ -49,17 +49,12 @@ export const ShoppingBagModule = () => {
     console.log("Direccion seleccionada: ", direccionSelected);
   },[direccionSelected]);
   
-  const cartItems = [
-    ...cartList.map(item => ({
+  const cartItems = cartList.map(item => ({
       name: item.nombreProducto,
       price: item.precio,
       quantity: item.quantity,
       id: item.contentful_product_id
-    })),
-    ...(totalCarrito.costoEnvio > 0
-      ? [{ name: "Costo de envío", price: totalCarrito.costoEnvio, quantity: 1 }]
-      : [])
-  ];
+    }));
   
     //console.log("CartList: ", cartList);
 

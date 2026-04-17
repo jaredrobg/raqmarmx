@@ -13,6 +13,7 @@ export async function POST(req: Request) {
     const { items } = await req.json() as { items: Item[] };
 
     
+    console.log("ITEMS:", items);
 
     //  traer productos reales desde Contentful
     const line_items = await Promise.all(

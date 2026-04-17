@@ -135,7 +135,7 @@ const ModalProducto = ({ producto, visible, onClose }: ModalProductoProps) => {
             </div>
             <div className="card-content_modal second">
               <span>Descripcion</span>
-              <p>{productoState.fields?.descripcion}</p>
+              <p style={{ whiteSpace: "pre-line" }}>{productoState.fields?.descripcion}</p>
               <span>Material:</span>
               <p>
                 {productoState.fields?.material?.toUpperCase()}

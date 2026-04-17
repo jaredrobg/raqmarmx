@@ -126,8 +126,8 @@ export default function Productos({productos = [], limit}: ProductosProps){
                             />
                         </div>    
                         <div className="card-content">
-                            <h3>{producto.fields.modelo}</h3>
-                            <p className="card_nombre">{producto.fields.nombre}</p>
+                            <h3>{producto.fields.nombre}</h3>
+                            <p className="card_nombre">{producto.fields.modelo}</p>
                             <p className="card_precio">{Number(producto.fields.precio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
                             <Button type='addButton' 
                                 onClick={()=>addToShoppingBag({

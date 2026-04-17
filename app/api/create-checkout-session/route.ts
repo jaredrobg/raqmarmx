@@ -1,36 +1,47 @@
 import Stripe from "stripe";
-import {client} from "../../lib/contentful";
+import { client } from "../../lib/contentful";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 
 interface Item {
-  quantity: number;
   id: string;
+  quantity: number;
 }
 
 export async function POST(req: Request) {
   try {
     const { items } = await req.json() as { items: Item[] };
 
-    
-    console.log("ITEMS:", items);
+    let total = 0;
 
-    //  traer productos reales desde Contentful
     const line_items = await Promise.all(
       items.map(async (item) => {
-        if (item.quantity <= 0) {
-          throw new Error("Cantidad inválida");
-        }
+
+        if (!item.id) throw new Error("Item sin ID");
+        if (item.quantity <= 0) throw new Error("Cantidad inválida");
+
         const entry = await client.getEntry(item.id);
+
         if (!entry || !entry.fields) {
           throw new Error("Producto no encontrado");
         }
 
-        const fields: any = entry.fields;
+        const fields = entry.fields as {
+          nombre: string;
+          precio: number;
+          cantidad?: number;
+        };
 
-        if (item.quantity > fields.cantidad) {
+        if (!fields.precio || fields.precio <= 0) {
+          throw new Error("Precio inválido");
+        }
+
+        if (fields.cantidad && item.quantity > fields.cantidad) {
           throw new Error("No hay suficiente stock");
         }
+
+        // 🔥 sumar total
+        total += fields.precio * item.quantity;
 
         return {
           price_data: {
@@ -45,6 +56,23 @@ export async function POST(req: Request) {
       })
     );
 
+    // 🚚 lógica de envío
+    const COSTO_ENVIO = 150;
+    const ENVIO_GRATIS_DESDE = 1500;
+
+    if (total < ENVIO_GRATIS_DESDE) {
+      line_items.push({
+        price_data: {
+          currency: "mxn",
+          product_data: {
+            name: "Costo de envío",
+          },
+          unit_amount: COSTO_ENVIO * 100,
+        },
+        quantity: 1,
+      });
+    }
+
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
@@ -54,13 +82,13 @@ export async function POST(req: Request) {
     });
 
     return Response.json({ url: session.url });
+
   } catch (err) {
-    if(err instanceof Error){
+    if (err instanceof Error) {
       console.error("Error al crear checkout:", err);
       return Response.json({ error: err.message }, { status: 500 });
     } else {
-      console.error("Error desconocido al crear checkout");
-      return Response.json({ error: "Error desconocido" }, { status: 500 }); 
+      return Response.json({ error: "Error desconocido" }, { status: 500 });
     }
   }
 }

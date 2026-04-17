@@ -233,6 +233,7 @@ const ShoppingBag = () => {
     name: item.nombreProducto,
     price: item.precio,
     quantity: item.quantity,
+    id: item.contentful_product_id
   }));
 
   const handleCheckout = async () => {

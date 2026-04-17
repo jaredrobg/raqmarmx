@@ -18,16 +18,21 @@ export default async function ProductosFiltrados({ params }: Props) {
 
   const productos: Entry<ProductoFields>[] = await getProductos();
 
+  const normalize = (text: string) =>
+  text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
   
 
   const productosFiltrados =
     filtro === 'todos'
       ? productos
-      : productos.filter(
-          (p) =>
-            p.fields.marca?.toLowerCase().includes(filtro.toLowerCase()) ||
-            p.fields.nombre?.toLowerCase().includes(filtro.toLowerCase()) ||
-            p.fields.temporada?.toLowerCase().includes(filtro.toLowerCase())
+      : productos.filter((p) =>
+          normalize(p.fields.marca || "").includes(normalize(filtro)) ||
+          normalize(p.fields.nombre || "").includes(normalize(filtro)) ||
+          normalize(p.fields.temporada || "").includes(normalize(filtro))
         );
 
   return (

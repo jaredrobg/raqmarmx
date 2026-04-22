@@ -25,7 +25,7 @@ const ModalProducto = ({ producto, visible, onClose }: ModalProductoProps) => {
   const [buttonVisible, setButtonVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [fecha, setFecha] = useState("");
-  const { addToShoppingBag } = useShoppingBag();
+  const { addToShoppingBag, discountedTotal } = useShoppingBag();
 
   useEffect(() => {
     if(visible){
@@ -94,7 +94,7 @@ const ModalProducto = ({ producto, visible, onClose }: ModalProductoProps) => {
         <div className="ModalProducto_closer_overlay" onClick={onClose}></div>
       )}
       <div
-        className="ModalProducto_container"
+        className="ModalProducto_container scroll-custom"
         style={imgClassName === "ExpandProductImage" ? { backgroundColor: "#222" } : {}}
       >
         <Button type="closeButton" onClick={onClose}>
@@ -125,8 +125,14 @@ const ModalProducto = ({ producto, visible, onClose }: ModalProductoProps) => {
                 <p className="card_modelo">
                   {productoState.fields?.modelo}
                 </p>
-                <p className="card_precio_modal">
+                <p className="card_precio_modal_antes">
                   {Number(productoState.fields?.precio).toLocaleString("es-MX", {
+                    style: "currency",
+                    currency: "MXN",
+                  })}
+                </p>
+                <p className="card_precio_modal">
+                  {Number((productoState.fields?.precio)* discountedTotal).toLocaleString("es-MX", {
                     style: "currency",
                     currency: "MXN",
                   })}
@@ -166,8 +172,8 @@ const ModalProducto = ({ producto, visible, onClose }: ModalProductoProps) => {
                     ? productoState.fields.nombre
                     : productoState.nombre,
                   precio: productoState.fields
-                    ? productoState.fields.precio
-                    : productoState.precio,
+                    ? Number(productoState.fields.precio * discountedTotal)
+                    : Number(productoState.precio * discountedTotal),
                   quantity: 1,
                   added_at: fecha,
                   disponible: productoState.fields ? productoState.fields.cantidad : 0,

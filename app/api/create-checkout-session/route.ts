@@ -6,6 +6,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string);
 interface Item {
   id: string;
   quantity: number;
+  discountedTotal: number;
 }
 
 export async function POST(req: Request) {
@@ -41,7 +42,7 @@ export async function POST(req: Request) {
         }
 
         // 🔥 sumar total
-        total += fields.precio * item.quantity;
+        total += (fields.precio * item.discountedTotal) * item.quantity;
 
         return {
           price_data: {
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
             product_data: {
               name: fields.nombre,
             },
-            unit_amount: Math.round(fields.precio * 100),
+            unit_amount: Math.round(fields.precio * 100)* item.discountedTotal,
           },
           quantity: item.quantity,
         };

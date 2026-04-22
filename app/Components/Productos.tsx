@@ -18,7 +18,7 @@ interface ProductosProps {
 
 export default function Productos({productos = [], limit}: ProductosProps){
     const safeProductos = Array.isArray(productos) ? productos : [];
-    const {addToShoppingBag} = useShoppingBag();
+    const {addToShoppingBag, discountedTotal} = useShoppingBag();
     const {user, URL} = useAuth();
     const [fecha, setFecha] = useState("");
     const [visible, setVisible] = useState(false);
@@ -128,7 +128,8 @@ export default function Productos({productos = [], limit}: ProductosProps){
                         <div className="card-content">
                             <h3>{producto.fields.nombre}</h3>
                             <p className="card_nombre">{producto.fields.modelo}</p>
-                            <p className="card_precio">{Number(producto.fields.precio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
+                            <p className="card_precio_antes">{Number(producto.fields.precio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
+                            <p className="card_precio">{Number((producto.fields.precio) * discountedTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
                             <Button type='addButton' 
                                 onClick={()=>addToShoppingBag({
                                     user_id: user ? user.internal_id : 0,
@@ -136,7 +137,7 @@ export default function Productos({productos = [], limit}: ProductosProps){
                                     image_URL: producto.fields.imagen?.fields.file.url,
                                     modelo: producto.fields.modelo,
                                     nombreProducto: producto.fields.nombre,
-                                    precio: producto.fields.precio,
+                                    precio: Number(producto.fields.precio) * discountedTotal,
                                     quantity: 1,
                                     added_at: fecha,
                                     disponible: producto.fields.cantidad,

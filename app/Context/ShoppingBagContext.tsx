@@ -18,6 +18,7 @@ interface ShoppingBagContextType {
   clearShoppingBag: () => void;
   updateQuantity: (id: string, quantity: number)=>void;
   totalCarrito: totalCarrito;
+  discountedTotal: number;
 };
 
 const ShoppingBagContext = createContext<ShoppingBagContextType | undefined>(undefined);
@@ -170,8 +171,11 @@ export const ShoppingBagProvider = ({ children }: { children: ReactNode }) => {
     totalCarrito.costoEnvio = 0;
   }
 
+  const globalDiscount = 35; // 35% de descuento global
+  const discountedTotal = (1 - globalDiscount / 100);
+
   return (
-    <ShoppingBagContext.Provider value={{ cartList, addToShoppingBag, removeFromShoppingBag, clearShoppingBag, updateQuantity, totalCarrito }}>
+    <ShoppingBagContext.Provider value={{ cartList, addToShoppingBag, removeFromShoppingBag, clearShoppingBag, updateQuantity, totalCarrito, discountedTotal }}>
       {children}
     </ShoppingBagContext.Provider>
   );

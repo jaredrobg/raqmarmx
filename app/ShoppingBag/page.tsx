@@ -17,7 +17,7 @@ import { useGlobal } from '../Context/GlobalContext';
 // ------------------ Modal reutilizable ------------------
 export const ShoppingBagModule = () => {
   const {user} = useAuth();
-  const { cartList, updateQuantity, removeFromShoppingBag, clearShoppingBag, totalCarrito } = useShoppingBag();
+  const { cartList, updateQuantity, removeFromShoppingBag, clearShoppingBag, totalCarrito, discountedTotal } = useShoppingBag();
   const [direccionesVisible, setDireccionesVisible] = useState(false);
   const [direccionSelected, setDireccionSelected] = useState({}as Direccion);
   const [mockVisible, setMockVisible] = useState(false);
@@ -53,7 +53,8 @@ export const ShoppingBagModule = () => {
       name: item.nombreProducto,
       price: item.precio,
       quantity: item.quantity,
-      id: item.contentful_product_id
+      id: item.contentful_product_id,
+      discountedTotal
     }));
   
     //console.log("CartList: ", cartList);
@@ -205,7 +206,7 @@ export const ShoppingBagModule = () => {
 // ------------------ Página / screen ------------------
 const ShoppingBag = () => {
   const {user} = useAuth();
-  const { cartList, updateQuantity, removeFromShoppingBag, clearShoppingBag, totalCarrito } = useShoppingBag();
+  const { cartList, updateQuantity, removeFromShoppingBag, clearShoppingBag, totalCarrito, discountedTotal } = useShoppingBag();
   const [direccionesVisible, setDireccionesVisible] = useState(false);
   const [direccionSelected, setDireccionSelected] = useState({} as Direccion);
   const [mockVisible, setMockVisible] = useState(false);
@@ -228,7 +229,8 @@ const ShoppingBag = () => {
     name: item.nombreProducto,
     price: item.precio,
     quantity: item.quantity,
-    id: item.contentful_product_id
+    id: item.contentful_product_id,
+    discountedTotal
   }));
 
   const handleCheckout = async () => {

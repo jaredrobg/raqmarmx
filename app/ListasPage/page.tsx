@@ -172,10 +172,13 @@ export function SelectedListComponent({visible, onClose, listName}:Props){
                 );
 
                 setProductos(filtrados);
+                setLoading(false);
 
             } catch (err) {
                 console.error(err);
                 toast.error("Error al obtener productos");
+                setLoading(false);
+
             }
             setLoading(false);
         };

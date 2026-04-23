@@ -148,6 +148,8 @@ export function SelectedListComponent({visible, onClose, listName}:Props){
                 });
 
                 const data: GetListsResponse = await res.json();
+                setLoading(false);
+
 
                 if (!data.success) return;
 
@@ -157,6 +159,7 @@ export function SelectedListComponent({visible, onClose, listName}:Props){
 
                 if (ids.length === 0) {
                     setProductos([]);
+
                     return;
                 }
 
@@ -172,7 +175,6 @@ export function SelectedListComponent({visible, onClose, listName}:Props){
                 );
 
                 setProductos(filtrados);
-                setLoading(false);
 
             } catch (err) {
                 console.error(err);

@@ -5,27 +5,36 @@ import { Button } from '../Elements/Elements';
 import { useState, useEffect, use } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { createPortal } from 'react-dom';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Heart } from 'lucide-react';
+import { FaHeart } from "react-icons/fa";
 import { useShoppingBag } from '../Context/ShoppingBagContext';
 import { useAuth } from '../Context/AuthContext';
 import {client} from '../lib/contentful';
 import { ProductoFields } from '../lib/contentful';
 import{ Producto } from '../Elements/interface';
+import ModalListas from './ModalListas';
+import toast from 'react-hot-toast';
 
 interface ModalProductoProps {
   producto: ProductoFields;
   visible: boolean;
   onClose: () => void;
+  onProductSaved: (productId: string) => void;
+  onProductRemoved: (productId: string) => void;
+  listButton: boolean;
 }
 
-const ModalProducto = ({ producto, visible, onClose }: ModalProductoProps) => {
-  const { user } = useAuth();
+const ModalProducto = ({ producto, visible, onClose, onProductSaved, onProductRemoved, listButton }: ModalProductoProps) => {
+  const { user, URL } = useAuth();
   const [productoState, setProductoState] = useState(producto); // ✅ estado local
   const [imgClassName, setImgClassName] = useState("card_image_modal");
   const [buttonVisible, setButtonVisible] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [fecha, setFecha] = useState("");
   const { addToShoppingBag, discountedTotal } = useShoppingBag();
+  const [modalListasVisible, setModalListasVisible] = useState(false);
+  const [selectedProductoId, setSelectedProductoId] = useState<string | null>(null);
+  const [savedProducts, setSavedProducts] = useState<string[]>([]);
 
   useEffect(() => {
     if(visible){
@@ -83,7 +92,55 @@ const ModalProducto = ({ producto, visible, onClose }: ModalProductoProps) => {
     setButtonVisible(false);
   };
 
+
+
+  // Obtencion de productos guardados
+    useEffect(() => {
+        if (user){
+            const fetchSavedProducts = async () =>{
+                try{
+                    const res = await fetch(`${URL}/get_user_lists.php`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ user_id: user.internal_id }),
+                    });
+
+                    const data = await res.json();
+                    if (data.success){
+                        const productosGuardados = data.listas?.map((item: { product_id: string }) => item.product_id);
+                        setSavedProducts(productosGuardados);
+                    }
+                } catch (err){
+                    console.error(err);
+                    toast.error("Error al obtener productos guardados");
+                }
+            }
+            fetchSavedProducts();
+        }
+    },[user]);
+
+    const handleProductSaved = (productId: string) => {
+        setSavedProducts(prev => {
+            if (prev?.includes(productId)) return prev;
+            return [...prev, productId];
+        });
+        onProductSaved(productId);
+    };
+    const handleProductRemoved = (productId: string) => {
+        setSavedProducts(prev => prev.filter(id => id !== productId));
+        onProductRemoved(productId);
+    };
+
+
+
+    const abrirModalListas = (productoId: string) => {
+        setSelectedProductoId(productoId);
+        setModalListasVisible(true);
+    }
+
   if (!productoState?.fields) return null;
+
+  const productoId = productoState.sys ? productoState.sys.id : productoState.contentful_product_id;
 
   return createPortal(
     <div
@@ -154,44 +211,53 @@ const ModalProducto = ({ producto, visible, onClose }: ModalProductoProps) => {
                 <b>Disponibles:</b> {productoState.fields?.cantidad}
               </p>
             </div>
-            <Button
-              type="addButton"
-              onClick={() =>
-                addToShoppingBag({
-                  user_id: user ? user.internal_id : 0,
-                  contentful_product_id: productoState.sys
-                    ? productoState.sys.id
-                    : productoState.contentful_product_id,
-                  image_URL: productoState.fields
-                    ? productoState.fields.imagen?.fields.file.url
-                    : productoState.image_URL,
-                  modelo: productoState.fields
-                    ? productoState.fields.modelo
-                    : productoState.modelo,
-                  nombreProducto: productoState.fields
-                    ? productoState.fields.nombre
-                    : productoState.nombre,
-                  precio: productoState.fields
-                    ? Number(productoState.fields.precio * discountedTotal)
-                    : Number(productoState.precio * discountedTotal),
-                  quantity: 1,
-                  added_at: fecha,
-                  disponible: productoState.fields ? productoState.fields.cantidad : 0,
-                  estatus_pedido: '',
-                  order_date: '',
-                  cantidad: 0
-                })
-              }
-              style={{
-                margin: "auto",
-                marginTop: "-40px",
-                transform: "translateX(-50%)",
-                position: isMobile ? "absolute" : "static",
-                left: "50%",
-              }}
-            >
-              <ShoppingBag size={16} />+
-            </Button>
+            <div style={styles.buttonContainer}>
+              <Button
+                type="addButton"
+                onClick={() =>
+                  addToShoppingBag({
+                    user_id: user ? user.internal_id : 0,
+                    contentful_product_id: productoState.sys
+                      ? productoState.sys.id
+                      : productoState.contentful_product_id,
+                    image_URL: productoState.fields
+                      ? productoState.fields.imagen?.fields.file.url
+                      : productoState.image_URL,
+                    modelo: productoState.fields
+                      ? productoState.fields.modelo
+                      : productoState.modelo,
+                    nombreProducto: productoState.fields
+                      ? productoState.fields.nombre
+                      : productoState.nombre,
+                    precio: productoState.fields
+                      ? Number(productoState.fields.precio * discountedTotal)
+                      : Number(productoState.precio * discountedTotal),
+                    quantity: 1,
+                    added_at: fecha,
+                    disponible: productoState.fields ? productoState.fields.cantidad : 0,
+                    estatus_pedido: '',
+                    order_date: '',
+                    cantidad: 0
+                  })
+                }
+              >
+                <ShoppingBag size={16} />+
+              </Button>
+              {listButton && (
+                <Button type='addButton'
+                    onClick={()=>abrirModalListas(productoId)}
+                >
+                    {savedProducts?.includes(productoId) ? <FaHeart size={ 15}/> : <Heart size={15} />}
+                </Button>
+              )}
+            </div>
+            <ModalListas 
+                visible={modalListasVisible}
+                onClose={() => setModalListasVisible(false)}
+                productoId={selectedProductoId}
+                onProductSaved={handleProductSaved}
+                onProductRemoved={handleProductRemoved}
+            />
           </div>
         ) : (
           <div className="card_modal">No hay producto disponible</div>
@@ -203,6 +269,13 @@ const ModalProducto = ({ producto, visible, onClose }: ModalProductoProps) => {
 };
 
 export default ModalProducto;
+const styles: { buttonContainer: React.CSSProperties } = {
+  buttonContainer: {
+    margin: "auto", 
+    marginTop: "20px", 
+    textAlign:"center" ,
+  }
+};
 
 
 

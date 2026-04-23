@@ -7,6 +7,7 @@ type User = {
   name: string;
   lastname: string;
   email: string;
+  level: number;
 };
 
 type AuthContextType = {

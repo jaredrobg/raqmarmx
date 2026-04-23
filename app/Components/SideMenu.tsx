@@ -78,7 +78,7 @@ export default function SideMenu(){
                         <Link href='/Profile' className='SideMenu_option' onClick={onClose}  style={{fontWeight:"bold", fontSize:"19px"}}>
                             {user? `${user.name} ${user.lastname}` : "Iniciar Sesion"}
                         </Link>
-                        {user && user.internal_id < 50 && <Link href='/AdminPage' onClick={onClose} prefetch={false} className='SideMenu_option'>Admin</Link>}
+                        {user && user.level >= 2 && <Link href='/AdminPage' onClick={onClose} prefetch={false} className='SideMenu_option'>Admin</Link>}
                         <Link href='/ShoppingBag' className='SideMenu_option' onClick={onClose}>Carrito</Link>
                         <div className='line'></div>
                     </div>

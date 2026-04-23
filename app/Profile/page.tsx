@@ -8,6 +8,7 @@ import { Button, LogginButton } from '../Elements/Elements';
 import { Eye } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import ListasPage from '../ListasPage/page';
 
 interface pageProps {
     visible: boolean;
@@ -281,12 +282,15 @@ const ProfilePage = ()=>{
                             <li onClick={()=>router.push(`/Enviados_Entregados?filter=ENVIADO`)} className='ProfilePage_nav_option'><span></span>Enviados</li>
                             <Link href='/DireccionesPage' className='ProfilePage_nav_option'><span></span>Direcciones de Envio</Link>
                             <Link href='/ComprarNuevamentePage' className='ProfilePage_nav_option'><span></span>Comprar de Nuevo</Link>
+                            {/* <Link href='/ListasPage' style={{textAlign:'center', margin:"auto", color:"#666", gridColumn:"2/3"}}><span></span>Listas</Link> */}
                         </ul>
                     </nav>
 
                     <div style={{textAlign:"center", marginTop:"100px"}}>
                         <Button onClick={cerrarSesion} type='red'>Cerrar Sesion</Button>
                     </div>
+                    <ListasPage />
+                    
                 </div>
              :
                 <div className='loginPage_render'>

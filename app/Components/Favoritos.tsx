@@ -52,6 +52,8 @@ export default function Favoritos(){
     },[])
 
 
+    const handleProductSaved = ()=>{};
+    const handleProductRemoved = ()=>{};
 
     
     return(
@@ -84,7 +86,14 @@ export default function Favoritos(){
                 }
             }
             )}
-            <ModalProducto onClose={onClose} visible={visible} producto={productoModal} />
+            <ModalProducto 
+            visible={visible} 
+            onClose={onClose} 
+            producto={productoModal} 
+            onProductSaved={handleProductSaved}
+            onProductRemoved={handleProductRemoved}
+            listButton={true}
+            />
         </div>
     )
 }

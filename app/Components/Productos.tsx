@@ -5,11 +5,14 @@ import {ProductoFields } from "../lib/contentful";
 import { Entry } from "contentful";
 import FadeIn from './FadeIn';
 import { Button } from '../Elements/Elements';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Heart } from 'lucide-react';
+import { FaHeart } from "react-icons/fa";
 import { useAuth } from '../Context/AuthContext';
 import { useShoppingBag } from '../Context/ShoppingBagContext';
 import { useEffect, useState, useRef } from 'react';
 import ModalProducto from './ModalProducto'
+import ModalListas from './ModalListas';
+import toast from 'react-hot-toast';
 
 interface ProductosProps {
     productos: Entry<ProductoFields>[];
@@ -25,7 +28,12 @@ export default function Productos({productos = [], limit}: ProductosProps){
     const [producto, setProducto] = useState<ProductoFields>({} as ProductoFields);
     const [isMobile, setIsMobile] = useState(false);
     const [visibleCount, setVisibleCount] = useState(8);
+    const [modalListasVisible, setModalListasVisible] = useState(false);
+    const [selectedProductoId, setSelectedProductoId] = useState<string | null>(null);
+    const [savedProducts, setSavedProducts] = useState<string[]>([]);
     const loadMoreRef = useRef<HTMLDivElement>(null);
+
+    
     
     //verificacion de movil
     useEffect(()=>{
@@ -105,9 +113,50 @@ export default function Productos({productos = [], limit}: ProductosProps){
         return () => clearTimeout(timer);
     }, []);
 
+    // Obtencion de productos guardados
+    useEffect(() => {
+        if (user){
+            const fetchSavedProducts = async () =>{
+                try{
+                    const res = await fetch(`${URL}/get_user_lists.php`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ user_id: user.internal_id }),
+                    });
+
+                    const data = await res.json();
+                    if (data.success){
+                        const productosGuardados = data.listas?.map((item: { product_id: string }) => item.product_id);
+                        setSavedProducts(productosGuardados);
+                    }
+                } catch (err){
+                    console.error(err);
+                    toast.error("Error al obtener productos guardados");
+                }
+            }
+            fetchSavedProducts();
+        }
+    },[user]);
+
+    const handleProductSaved = (productId: string) => {
+        if(!savedProducts) return;
+        setSavedProducts(prev => {
+            if (prev?.includes(productId)) return prev;
+            return [...prev, productId];
+        });
+    };
+    const handleProductRemoved = (productId: string) => {
+        setSavedProducts(prev => prev.filter(id => id !== productId));
+    };
+
 
     if (disponibles.length === 0) {
         return <p style={{ textAlign: "center" }}>No hay productos disponibles</p>;
+    }
+
+    const abrirModalListas = (productoId: string) => {
+        setSelectedProductoId(productoId);
+        setModalListasVisible(true);
     }
     
     return(
@@ -146,6 +195,11 @@ export default function Productos({productos = [], limit}: ProductosProps){
                                     cantidad: 0
                                 })} 
                             ><ShoppingBag size={isMobile ? 9 : 15} />+</Button>
+                            <Button type='addButton'
+                                onClick={()=>abrirModalListas(producto.sys.id)}
+                            >
+                                {savedProducts?.includes(producto.sys.id) ? <FaHeart size={isMobile ? 9 : 15}/> : <Heart size={isMobile ? 9 : 15} />}
+                            </Button>
                         </div>
                     </div>
                 </FadeIn>
@@ -157,11 +211,21 @@ export default function Productos({productos = [], limit}: ProductosProps){
                 <p>Cargando más productos...</p>
                 </div>
             )}
-            <ModalProducto visible={visible} onClose={onClose} producto={producto} />
+            <ModalProducto 
+            visible={visible} 
+            onClose={onClose} 
+            producto={producto} 
+            onProductSaved={handleProductSaved}
+            onProductRemoved={handleProductRemoved}
+            listButton={true}
+            />
+            <ModalListas 
+                visible={modalListasVisible}
+                onClose={() => setModalListasVisible(false)}
+                productoId={selectedProductoId}
+                onProductSaved={handleProductSaved}
+                onProductRemoved={handleProductRemoved}
+            />
         </div>
     )
 }
-
-
-
-

@@ -12,6 +12,7 @@ import AvisoMantenimiento from "./Components/AvisoMantenimiento";
 import { GlobalProvider } from "./Context/GlobalContext";
 import SideMenu from "./Components/SideMenu";
 import { ShoppingBagModule } from "./ShoppingBag/page";
+import { Toaster } from 'react-hot-toast';
 
 
 const geistSans = Geist({
@@ -52,6 +53,14 @@ export default function RootLayout({
             <ShoppingBagModule />
             <ScrollToTop />
             {children}
+            <Toaster
+              position="top-center"
+              containerStyle={{
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            />
             <WhatsAppButton />
             <AvisoMantenimiento />
             <Footer />

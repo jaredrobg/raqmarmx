@@ -38,7 +38,7 @@ const AdminPage = ()=>{
     },[user]);
 
     if(!user) return null;
-    if(user.internal_id > 50 ) return null;
+    if(user.level < 2 ) return null;
 
     return(
         <div className='AdminPage'>

@@ -26,6 +26,9 @@ export const ShoppingBagModule = () => {
   const [signupVisible, setSignupVisible] = useState(false);
   const {SBvisible, setSBVisible} = useGlobal();
 
+  const mensaje =  "Hola! vengo de la pagina de Raqmar y me gustaría obtener más información sobre la venta al mayoreo.";
+  const numero = "523327652904";
+
   const onClose = () => {
     setSBVisible(false);
   };
@@ -162,6 +165,18 @@ export const ShoppingBagModule = () => {
             </p>
           </div>
         </div>
+
+        <div className='mensaje_mayoreo' style={{color:"#0b8783", textAlign:"center"}} >
+          <p>Contamos tambien con opciones de ventas de mayoreo.</p>
+          <p style={{marginTop:"-10px"}}>
+            <a 
+              href={`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`}
+              target='_blank'         
+              rel="noopener noreferrer"
+              style={{textDecoration:"underline", cursor:"pointer"}}
+            >Contactanos</a> para mas informacion.
+          </p>
+        </div>
           
         
 
@@ -213,6 +228,9 @@ const ShoppingBag = () => {
   const [mounted, setMounted] = useState(false);
   const [loginVisible, setLoginVisible] = useState(false);
   const [signupVisible, setSignupVisible] = useState(false);
+
+  const mensaje =  "Hola! vengo de la pagina de Raqmar y me gustaría obtener más información sobre la venta al mayoreo.";
+  const numero = "523327652904";
 
 
   useEffect(() => {
@@ -332,6 +350,18 @@ const ShoppingBag = () => {
               Total de Productos: {totalCarrito.totalCantidad}
             </p>
           </div>
+        </div>
+
+        <div className='mensaje_mayoreo' style={{color:"#0b8783", textAlign:"center"}} >
+          <p>Contamos tambien con opciones de ventas de mayoreo.</p>
+          <p style={{marginTop:"-10px"}}>
+            <a 
+              href={`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`}
+              target='_blank'         
+              rel="noopener noreferrer"
+              style={{textDecoration:"underline", cursor:"pointer"}}
+            >Contactanos</a> para mas informacion.
+          </p>
         </div>
           
         

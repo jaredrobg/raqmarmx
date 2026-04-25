@@ -1679,6 +1679,11 @@ a{
   row-gap: 10px;
 	justify-content: center;
 }
+
+
+.mensaje_mayoreo{
+  font-size: 13px;
+}
 @media(min-width: 700px){
   .lista_productos_container{
     margin: 20px;
@@ -1686,5 +1691,8 @@ a{
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     column-gap: 1rem;
     row-gap: 100px;
+  }
+  .mensaje_mayoreo{
+    font-size: 16px;
   }
 }

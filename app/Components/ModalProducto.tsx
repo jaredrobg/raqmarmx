@@ -138,6 +138,9 @@ const ModalProducto = ({ producto, visible, onClose, onProductSaved, onProductRe
         setModalListasVisible(true);
     }
 
+  const mensaje =  "Hola! vengo de la pagina de Raqmar y me gustaría obtener más información sobre la venta al mayoreo.";
+  const numero = "523327652904";
+
   if (!productoState?.fields) return null;
 
   const productoId = productoState.sys ? productoState.sys.id : productoState.contentful_product_id;
@@ -262,7 +265,21 @@ const ModalProducto = ({ producto, visible, onClose, onProductSaved, onProductRe
         ) : (
           <div className="card_modal">No hay producto disponible</div>
         )}
+
+        <div className='mensaje_mayoreo' style={{color:"#0b8783", textAlign:"center"}} >
+          <p>Contamos tambien con opciones de ventas de mayoreo.</p>
+          <p style={{marginTop:"-10px"}}>
+            <a 
+              href={`https://wa.me/${numero}?text=${encodeURIComponent(mensaje)}`}
+              target='_blank'         
+              rel="noopener noreferrer"
+              style={{textDecoration:"underline", cursor:"pointer"}}
+            >Contactanos</a> para mas informacion.
+          </p>
+        </div>
       </div>
+
+      
     </div>,
     document.body
   );

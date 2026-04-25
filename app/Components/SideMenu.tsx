@@ -28,7 +28,7 @@ export default function SideMenu(){
 
 
     
-    const mensaje =  "Hola! vengo del boton de contacto de la pagina web";
+    const mensaje =  "Hola! vengo de la pagina de Raqmar y me gustaría obtener más información sobre sus productos.";
     const numero = "523327652904";
 
     useEffect(()=>{

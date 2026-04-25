@@ -5,16 +5,17 @@ import { useAuth } from '../Context/AuthContext';
 import Image from 'next/image';
 import { ChevronDown, ChevronUp, ArrowLeft, ChevronRight, ShoppingBag, Trash2 } from 'lucide-react';
 import { Button } from '../Elements/Elements';
-import Link  from 'next/link';
 import toast from 'react-hot-toast';
 import { client, ProductoFields } from '../lib/contentful';
 import { Entry } from "contentful";
 import { useShoppingBag } from '../Context/ShoppingBagContext';
 import ModalProducto from '../Components/ModalProducto';
+import { useGlobal} from '../Context/GlobalContext';
 
 
 export default function ListasPage(){
     const {user, URL} = useAuth();
+    const {isMobile} = useGlobal();
     const [listas, setListas] = useState<string[]>(["Favoritos"]);
     const [visible, setVisible] = useState(false);
     const [selectedList, setSelectedList] = useState<string | null>(null);
@@ -351,7 +352,7 @@ export function SelectedListComponent({visible, onClose, listName}:Props){
            
             </div>
 
-            <div  style={{display:"flex", justifyContent:"center", marginTop:"30px"}}>
+            <div  style={{display:"flex", justifyContent:"center", marginTop: isMobile?"30px":"80px"}}>
                 <p style={{color:"#ef1a1a"}} onClick={()=>handleDeleteClick("", "lista")}>
                     Eliminar Lista?
                 </p>

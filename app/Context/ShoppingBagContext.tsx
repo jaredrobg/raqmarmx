@@ -19,12 +19,14 @@ interface ShoppingBagContextType {
   updateQuantity: (id: string, quantity: number)=>void;
   totalCarrito: totalCarrito;
   discountedTotal: number;
+  setGlobalDiscount: (discount: number) => void;
 };
 
 const ShoppingBagContext = createContext<ShoppingBagContextType | undefined>(undefined);
 
 export const ShoppingBagProvider = ({ children }: { children: ReactNode }) => {
   const [cartList, setCartList] = useState<PedidoItem[]>([]);
+  const [globalDiscount, setGlobalDiscount] = useState(0);
   const {user, URL} =useAuth();
 
   // Cargar carrito del cache al montar
@@ -33,6 +35,32 @@ export const ShoppingBagProvider = ({ children }: { children: ReactNode }) => {
       const storedCart = sessionStorage.getItem("cart");
       if (storedCart) setCartList(JSON.parse(storedCart));  
   }, []);
+
+   useEffect(() => {
+        
+        const obtenerDescuento = async () => {
+            
+            try {
+                const res = await fetch(`${URL}/obtener_descuento.php`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        descuento_name: "descuento_Global"
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    setGlobalDiscount(data.descuento);
+                }else{
+                    console.log("Error obteniendo descuento:", data.message);
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        };
+
+        obtenerDescuento();
+    }, []);
 
   useEffect(()=>{
     if(!user) return;
@@ -171,11 +199,11 @@ export const ShoppingBagProvider = ({ children }: { children: ReactNode }) => {
     totalCarrito.costoEnvio = 0;
   }
 
-  const globalDiscount = 35; // 35% de descuento global
+  
   const discountedTotal = (1 - globalDiscount / 100);
 
   return (
-    <ShoppingBagContext.Provider value={{ cartList, addToShoppingBag, removeFromShoppingBag, clearShoppingBag, updateQuantity, totalCarrito, discountedTotal }}>
+    <ShoppingBagContext.Provider value={{ cartList, addToShoppingBag, removeFromShoppingBag, clearShoppingBag, updateQuantity, totalCarrito, discountedTotal, setGlobalDiscount }}>
       {children}
     </ShoppingBagContext.Provider>
   );

@@ -1,7 +1,10 @@
 'use client';
 import './adminPage.css';
 import { useState, useEffect } from 'react';
+import { House } from 'lucide-react';
+import { Package, Truck, Percent, BarChart3, Boxes, RefreshCcw } from 'lucide-react';
 import { useAuth } from '../Context/AuthContext';
+import Descuentos from './Descuentos';
 // import { Button } from '../Elements/Elements';
 
 type Orden = {
@@ -30,7 +33,7 @@ type Orden = {
 
 const AdminPage = ()=>{
     const {user} = useAuth();
-    const [seccionVisible, setSeccionVisible] = useState("Pedidos");
+    const [seccionVisible, setSeccionVisible] = useState("");
 
     
 
@@ -40,18 +43,52 @@ const AdminPage = ()=>{
     if(!user) return null;
     if(user.level < 2 ) return null;
 
+    const opciones = [
+        { nombre: "Pedidos", icon: <Package />, color: "#3b82f6" },
+        { nombre: "Entregados", icon: <Truck />, color: "#22c55e" },
+        { nombre: "Descuentos", icon: <Percent />, color: "#f59e0b" },
+        { nombre: "Reporte", icon: <BarChart3 />, color: "#ef4444" },
+        { nombre: "Inventario", icon: <Boxes />, color: "#8b5cf6" },
+    ];
+
     return(
         <div className='AdminPage'>
-            <div className='opciones'>
-                <div className='opcion' onClick={()=>setSeccionVisible("Pedidos")}>Pedidos</div>
-                <div className='opcion' onClick={()=>setSeccionVisible('Entregados')}>Entregados</div>
+            <div className='cardAdmin' style={{width:"150px", height:'80px', margin:"20px auto"}}>
+                <div  onClick={()=>setSeccionVisible("")}>
+                    <div className="icono" style={{ color: "#2c92f1", marginBottom: "0px"}}>
+                        <House size={31}/>
+                    </div>
+                    <h3>Inicio</h3>
+                </div>
             </div>
+
+            {!seccionVisible && (
+                <div className="cardsContainer">
+                {opciones.map((op) => (
+                    <div
+                    key={op.nombre}
+                    className="cardAdmin"
+                    onClick={() => setSeccionVisible(op.nombre)}
+                    >
+                    <div className="icono" style={{ color: op.color }}>
+                        {op.icon}
+                    </div>
+                    <h3>{op.nombre}</h3>
+                    </div>
+                ))}
+                </div>
+            )}
+
             {seccionVisible === 'Pedidos' && <PedidosList />}
             {seccionVisible === 'Entregados' && <EntregadosList />}
+            {seccionVisible === 'Descuentos' && <Descuentos />}
+            {seccionVisible === 'Reporte' && <div>Reporte de ventas</div>}
+            {seccionVisible === 'Inventario' && <div>Inventario</div>}
         </div>
     )
 }
 export default AdminPage;
+
     
 
 const PedidosList = ()=>{
@@ -59,6 +96,7 @@ const PedidosList = ()=>{
     const [ordenes, setOrdenes] = useState([]);
     const [selector, setSelector] = useState("");
     const [actualizado, setActualizado] = useState(false);
+    const [modalEstatus, setModalEstatus] = useState<Orden | null>(null);
     
     useEffect(()=>{
         
@@ -207,13 +245,18 @@ const PedidosList = ()=>{
                 <div className='columna'>INSTRUCCIONES DE ENTREGA</div>
                 {ordenes && ordenes.map((orden : Orden, index)=>
                     <>
-                    <div key={`estatus-${index}`} className='celda'
+                    <div key={`estatus-${index}`} className='celda estatus'
                     style={{fontSize:"9px", color: orden.estatus_pedido !== 'ENVIADO'? orden.estatus_pedido === 'ERROR EN ENTREGA' ? "#db0a0a": "#02a" : "#0a2",}}>
+                        <span className={`estatus_badge 
+                        ${orden.estatus_pedido === 'ENVIADO' ? 'estatus_enviado' : ''}
+                        ${orden.estatus_pedido === 'ERROR EN ENTREGA' ? 'estatus_error' : ''}
+                        ${orden.estatus_pedido === 'EN PROCESO DE ENVIO' ? 'estatus_proceso' : ''}
+                        `}>
                         {orden.estatus_pedido}
-                        <button onClick={()=>{
-                            if(selector === `estatus-${index}`) setSelector("");
-                            else setSelector(`estatus-${index}`)
-                        }}>Actualizar Estatus</button>
+                        </span>
+                        <button onClick={() => setModalEstatus(orden)}>
+                           <RefreshCcw size={10} /> Actualizar
+                        </button>
                         {selector === `estatus-${index}` && 
                         <div style={{marginTop: "5px"}}>
                             <p className='estatus_opcion' onClick={()=>updateEstatus("EN PROCESO DE ENVIO", orden.pedido_id, orden.name, orden.email)}>EN PROCESO DE ENVIO</p>
@@ -237,6 +280,44 @@ const PedidosList = ()=>{
                     </>
                 )}
             </div>
+            {modalEstatus && (
+                <div className="modalOverlay" onClick={() => setModalEstatus(null)}>
+                    <div className="modalContent" onClick={(e) => e.stopPropagation()}>
+                    
+                    <h3>Actualizar estatus</h3>
+                    <p><b>Pedido:</b> {modalEstatus.pedido_id}</p>
+
+                    <div className="estatusContainer">
+                        <button onClick={()=>{
+                        updateEstatus("EN PROCESO DE ENVIO", modalEstatus.pedido_id, modalEstatus.name, modalEstatus.email);
+                        setModalEstatus(null);
+                        }}>EN PROCESO DE ENVIO</button>
+
+                        <button onClick={()=>{
+                        updateEstatus("ENVIADO", modalEstatus.pedido_id, modalEstatus.name, modalEstatus.email);
+                        setModalEstatus(null);
+                        }}>ENVIADO</button>
+
+                        <button onClick={()=>{
+                        updateEstatus("ENTREGADO", modalEstatus.pedido_id, modalEstatus.name, modalEstatus.email);
+                        setModalEstatus(null);
+                        }}>ENTREGADO</button>
+
+                        <button className="error" onClick={()=>{
+                        updateEstatus("ERROR EN ENTREGA", modalEstatus.pedido_id, modalEstatus.name, modalEstatus.email);
+                        setModalEstatus(null);
+                        }}>
+                        ERROR EN ENTREGA
+                        </button>
+                    </div>
+
+                    <button className="cerrar" onClick={() => setModalEstatus(null)}>
+                        Cerrar
+                    </button>
+
+                    </div>
+                </div>
+                )}
         </div>
     )
 }
@@ -290,9 +371,15 @@ const EntregadosList = ()=>{
                 <div className='columna'>INSTRUCCIONES DE ENTREGA</div>
                 {entregados && entregados.map((orden : Orden, index)=>
                     <>
-                    <div key={`estatus-${index}`} className='celda'
+                    <div key={`estatus-${index}`} className='celda estatus'
                     style={{fontSize:"9px", color: orden.estatus_pedido !== 'ENTREGADO'? "#02a" : "#0a2",}}>
+                        <span className={`estatus_badge 
+                        ${orden.estatus_pedido === 'ENVIADO' ? 'estatus_enviado' : ''}
+                        ${orden.estatus_pedido === 'ERROR EN ENTREGA' ? 'estatus_error' : ''}
+                        ${orden.estatus_pedido === 'EN PROCESO DE ENVIO' ? 'estatus_proceso' : ''}
+                        `}>
                         {orden.estatus_pedido}
+                        </span>
                         {/* <button onClick={()=>{
                             if(selector === `estatus-${index}`) setSelector("");
                             else setSelector(`estatus-${index}`)

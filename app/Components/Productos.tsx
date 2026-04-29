@@ -27,7 +27,7 @@ export default function Productos({productos = [], limit}: ProductosProps){
     const [visible, setVisible] = useState(false);
     const [producto, setProducto] = useState<ProductoFields>({} as ProductoFields);
     const [isMobile, setIsMobile] = useState(false);
-    const [visibleCount, setVisibleCount] = useState(8);
+    const [visibleCount, setVisibleCount] = useState(10);
     const [modalListasVisible, setModalListasVisible] = useState(false);
     const [selectedProductoId, setSelectedProductoId] = useState<string | null>(null);
     const [savedProducts, setSavedProducts] = useState<string[]>([]);
@@ -85,7 +85,7 @@ export default function Productos({productos = [], limit}: ProductosProps){
 
     let lista = safeProductos;
     if(limit){  
-        lista = lista.slice(0, limit);
+        lista = lista.slice(0, isMobile ? limit : limit +5);
     }
     const disponibles = lista.filter(producto => producto.fields.cantidad > 0);
 
@@ -104,7 +104,7 @@ export default function Productos({productos = [], limit}: ProductosProps){
         return () => observer.disconnect();
     }, [disponibles.length]);
 
-    const productosVisibles: Entry<ProductoFields>[] = disponibles.slice(0, visibleCount);
+    const productosVisibles: Entry<ProductoFields>[] = disponibles.slice(0, isMobile ? visibleCount : visibleCount + 5);
     
     useEffect(() => {
         const timer = setTimeout(() => {

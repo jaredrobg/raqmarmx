@@ -7,6 +7,7 @@ import { getProductos, ProductoFields } from "../lib/contentful";
 import { Entry } from "contentful";
 import {Glasses} from 'lucide-react';
 import { LuAward } from "react-icons/lu";
+import Link from 'next/link';
 
 
 export const revalidate = 60; // Revalidar cada 60 segundos
@@ -17,6 +18,8 @@ interface HomePageProps {
 
 export default async function HomePage({ productos }: HomePageProps) {
     const productosobt: Entry<ProductoFields>[] = await getProductos();
+    
+    
     return(
         <div>
             <FadeIn direction='down'>
@@ -47,7 +50,13 @@ export default async function HomePage({ productos }: HomePageProps) {
             <FadeIn direction='up'>
                 <div className='bubble_text'>Nuestros productos</div>
             </FadeIn>
-            <Productos productos={productosobt} limit={10}/>
+            <Productos productos={productosobt} limit={11}/>
+
+            <div className='ver_mas'>
+                 <Link href="/ProductosPage">
+                    Todos los Productos
+                </Link>
+            </div>
             
         </div>
     );

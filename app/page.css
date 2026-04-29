@@ -1413,7 +1413,7 @@ a{
     }
     .card{
       width: 250px;
-      margin-top: 10px;
+      margin-top: 80px;
       height: 395px;
       margin-bottom: 10px;
     }
@@ -1694,5 +1694,33 @@ a{
   }
   .mensaje_mayoreo{
     font-size: 16px;
+  }
+}
+
+
+.ver_mas{  
+  width: fit-content;
+  margin: auto;
+  text-align: center;
+  margin-top: 80px;
+  
+  background: #fcfcfc;
+  border-radius: 20px;
+  padding: 10px 15px;
+  cursor: pointer;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: all 0.25s ease;
+  border: 3px solid #fff;
+}
+
+.ver_mas:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.12);
+}
+
+@media(min-width: 700px){
+  .ver_mas{
+    margin-top: 120px;
   }
 }

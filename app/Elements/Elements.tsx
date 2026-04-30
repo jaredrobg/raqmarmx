@@ -12,10 +12,9 @@ interface ButtonProps{
 }
 
 
-const Button = ({type, children, ...buttonProps}: ButtonProps)=>{
+const Button = ({type, children, disabled, ...buttonProps}: ButtonProps)=>{
     // const className= type === 'primary' ? 'PrimaryButton' : 'SecondaryButton';
     let className;
-    let disabled = false;
     switch(type){
         case 'primary':
             className = 'PrimaryButton';
@@ -34,6 +33,10 @@ const Button = ({type, children, ...buttonProps}: ButtonProps)=>{
             break;
         case 'addButton':
             className = 'addButton';
+            break;
+        case 'addButtonDisabled':
+            className = 'addButton disabled';
+            disabled = true;
             break;
         case 'azul2':
             className = 'Azul2Button';

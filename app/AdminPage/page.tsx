@@ -5,6 +5,7 @@ import { House } from 'lucide-react';
 import { Package, Truck, Percent, BarChart3, Boxes, RefreshCcw } from 'lucide-react';
 import { useAuth } from '../Context/AuthContext';
 import Descuentos from './Descuentos';
+import Inventario from './Inventario';
 // import { Button } from '../Elements/Elements';
 
 type Orden = {
@@ -83,7 +84,7 @@ const AdminPage = ()=>{
             {seccionVisible === 'Entregados' && <EntregadosList />}
             {seccionVisible === 'Descuentos' && <Descuentos />}
             {seccionVisible === 'Reporte' && <div>Reporte de ventas</div>}
-            {seccionVisible === 'Inventario' && <div>Inventario</div>}
+            {seccionVisible === 'Inventario' && <Inventario />}
         </div>
     )
 }

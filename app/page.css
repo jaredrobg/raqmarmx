@@ -643,6 +643,7 @@ a{
 	border-radius: 7px;
   border: 1px solid #ccc;
   cursor: pointer;
+  overflow: hidden;
 }
 .card-content{
 	font-size: 10px;
@@ -1297,6 +1298,10 @@ a{
   z-index: 15;
   background-color: transparent;
 }
+.disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
 .whatsapp-button {
   position: fixed;
@@ -1639,7 +1644,7 @@ a{
   overflow: visible;
 }
 
-.listasPage h3{
+.listasPage h2{
   text-align: center;
   margin-bottom: 50px;
 }
@@ -1678,6 +1683,21 @@ a{
 	column-gap: 1rem;
   row-gap: 10px;
 	justify-content: center;
+}
+
+.disponibilidad{
+  position: absolute;
+  top: 0%;
+  left: 0;
+  width: 150%;
+  height: fit-content;
+  font-size: 15px;
+}
+.disponibilidad p{
+  padding: 5px;
+  background-color: #ec0b0b87;
+  color: #fff;
+  transform: rotate(-45deg) translateX(-25%);
 }
 
 
@@ -1724,3 +1744,4 @@ a{
     margin-top: 120px;
   }
 }
+

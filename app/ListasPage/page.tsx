@@ -109,6 +109,7 @@ export function SelectedListComponent({visible, onClose, listName}:Props){
     const [modalVisible, setModalVisible] = useState(false);
     const [fecha, setFecha] = useState("");
     const [isMobile, setIsMobile] = useState(false);
+    const [available, setAvailable] = useState(true);
 
 
     //verificacion de movil
@@ -303,7 +304,7 @@ export function SelectedListComponent({visible, onClose, listName}:Props){
             <Button type='backButton' style={{color:"#666", top:"10px"}} onClick={()=>{setProductos([]); onClose(); }}>
                 <ArrowLeft />
             </Button>
-            <h3>{listName}</h3>
+            <h2>{listName}</h2>
 
             <div className='lista_productos_container' >
                 {loading && <p>Cargando productos...</p>}
@@ -312,40 +313,44 @@ export function SelectedListComponent({visible, onClose, listName}:Props){
                 ) : (
                     productos.map((producto, index) => (
                         <div key={producto.sys.id} className="card" >
-                    <div className="card-image" onClick={()=>{ setProducto({...producto.fields, contentful_product_id: producto.sys.id}); setModalVisible(true);}}>
-                        <Image 
-                            src={`https:${producto.fields.imagen?.fields.file.url}`}
-                            alt={producto.fields.nombre}
-                            fill
-                            sizes='max-width: 100%; height: auto;'
-                            style={{objectFit: "cover", borderRadius:"7px"}}
-                        />
-                    </div>    
-                    <div className="card-content">
-                        <h3>{producto.fields.nombre}</h3>
-                        <p className="card_nombre">{producto.fields.modelo}</p>
-                        <p className="card_precio_antes">{Number(producto.fields.precio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
-                        <p className="card_precio">{Number((producto.fields.precio) * discountedTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
-                        <Button type='addButton' 
-                            onClick={()=>addToShoppingBag({
-                                user_id: user ? user.internal_id : 0,
-                                contentful_product_id: producto.sys.id,
-                                image_URL: producto.fields.imagen?.fields.file.url,
-                                modelo: producto.fields.modelo,
-                                nombreProducto: producto.fields.nombre,
-                                precio: Number(producto.fields.precio) * discountedTotal,
-                                quantity: 1,
-                                added_at: fecha,
-                                disponible: producto.fields.cantidad,
-                                estatus_pedido: '',
-                                order_date: '',
-                                cantidad: 0
-                            })} 
-                        ><ShoppingBag size={isMobile ? 9 : 15} />+</Button>
-                        <Button type='addButton' style={{backgroundColor:"#d71616"}} 
-                            onClick={()=>handleDeleteClick(producto.sys.id, "producto")}
-                        ><Trash2 size={isMobile ? 12 : 20} /></Button>
-                    </div>
+                            <div className="card-image" onClick={()=>{ setProducto({...producto.fields, contentful_product_id: producto.sys.id}); setModalVisible(true);}}>
+                                <Image 
+                                    src={`https:${producto.fields.imagen?.fields.file.url}`}
+                                    alt={producto.fields.nombre}
+                                    fill
+                                    sizes='max-width: 100%; height: auto;'
+                                    style={{objectFit: "cover", borderRadius:"7px"}}
+                                />
+                                <div className='disponibilidad' style={{display: producto.fields.cantidad > 0 ? "none" : "block"}}>
+                                        <p>NO DISPONIBLE POR EL MOMENTO</p>
+                                </div>
+                            </div>    
+                            <div className="card-content">
+                                <h3>{producto.fields.nombre}</h3>
+                                <p className="card_nombre">{producto.fields.modelo}</p>
+                                <p className="card_precio_antes">{Number(producto.fields.precio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
+                                <p className="card_precio">{Number((producto.fields.precio) * discountedTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
+                                <Button type={producto.fields.cantidad > 0?'addButton': 'addButtonDisabled'} 
+                                    onClick={()=>addToShoppingBag({
+                                        user_id: user ? user.internal_id : 0,
+                                        contentful_product_id: producto.sys.id,
+                                        image_URL: producto.fields.imagen?.fields.file.url,
+                                        modelo: producto.fields.modelo,
+                                        nombreProducto: producto.fields.nombre,
+                                        precio: Number(producto.fields.precio) * discountedTotal,
+                                        quantity: 1,
+                                        added_at: fecha,
+                                        disponible: producto.fields.cantidad,
+                                        estatus_pedido: '',
+                                        order_date: '',
+                                        cantidad: 0
+                                    })} 
+                                ><ShoppingBag size={isMobile ? 9 : 15} />+</Button>
+                                <Button type='addButton' style={{backgroundColor:"#d71616"}} 
+                                    onClick={()=>handleDeleteClick(producto.sys.id, "producto")}
+                                ><Trash2 size={isMobile ? 12 : 20} /></Button>
+                            </div>
+                            
                 </div>
                     ))
                 )}

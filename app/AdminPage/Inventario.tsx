@@ -285,7 +285,11 @@ const Inventario = () => {
                 </div>
             ) : (
                 <div className="InventarioList">
-                    {/* columnas */}
+                    <div className="columna">MODELO</div>
+                    <div className="columna">DESCRIPCIÓN</div>
+                    <div className="columna">MARCA</div>
+                    <div className="columna">CANTIDAD</div>
+                    <div className="columna">PRECIO</div>
 
                     {productosFiltrados.map((p, i) => (
                         <div key={i} style={{ display: 'contents' }}>

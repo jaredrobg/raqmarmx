@@ -125,11 +125,11 @@ const Inventario = () => {
 
         // Formatear datos
         const datosFormateados = data.map((p) => ({
-            Modelo: p.fields.modelo,
-            Descripción: p.fields.nombre,
-            Marca: p.fields.marca,
-            Cantidad: p.fields.cantidad,
-            Precio: p.fields.precio,
+            Modelo: p.modelo,
+            Descripción: p.nombre,
+            Marca: p.marca,
+            Cantidad: p.cantidad,
+            Precio: p.precio,
         }));
 
         // Crear hoja

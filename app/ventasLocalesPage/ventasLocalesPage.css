@@ -1,0 +1,114 @@
+.VentasLocalesPage{
+    padding:20px;
+}
+
+.ventasTitle{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.VentasLocalesTable{
+    display:grid;
+    grid-template-columns:
+    1fr
+    2fr
+    1fr
+    120px
+    140px
+    250px;
+
+    width:100%;
+    background:white;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 4px 20px rgba(0,0,0,.08);
+}
+
+.columna{
+    background:#111827;
+    color:white;
+    padding:16px;
+    font-weight:700;
+    font-size:14px;
+}
+
+.celda{
+    padding:14px;
+    border-bottom:1px solid #e5e7eb;
+
+    display:flex;
+    align-items:center;
+
+    min-height:70px;
+    word-break:break-word;
+}
+
+.buscadorContainer{
+    display:flex;
+    justify-content:flex-start;
+    margin-bottom:20px;
+}
+
+.inputBuscador{
+    width:350px;
+    padding:12px 14px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    outline:none;
+    font-size:15px;
+}
+
+.inputBuscador:focus{
+    border-color:#2563eb;
+}
+
+.accionesCell{
+    display:flex;
+    gap:10px;
+}
+
+.btnVenta{
+    background:#22c55e;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:10px 14px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.btnVenta:hover{
+    opacity:.9;
+}
+
+.btnVenta:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+.btnDevolucion{
+    background:#ef4444;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:10px 14px;
+    cursor:pointer;
+    font-weight:600;
+}
+
+.btnDevolucion:hover{
+    opacity:.9;
+}
+
+.noResultados{
+    text-align:center;
+    margin-top:50px;
+    color:#64748b;
+}
+
+.loadingContainer{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:300px;
+}

@@ -228,12 +228,19 @@ const VentasLocalesPage = () => {
     if (!user){
         return(
             <div>
-
                 Error!
                 Usuario sin Login, favor de contactar a Gerente.
             </div>
         )
     }   
+    if (user.level < 2){
+        return(
+            <div>
+                Error!
+                Necesitas ser presonal de Raqmar para acceder a esta pagina
+            </div>
+        )
+    }  
 
     return (
         <div className="VentasLocalesPage">

@@ -2,7 +2,7 @@
 
 import { Suspense, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { Lock, CheckCircle } from 'lucide-react';
+import { Lock, CheckCircle, Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../Context/AuthContext';
 
 function ResetPasswordContent(){
@@ -18,6 +18,8 @@ function ResetPasswordContent(){
     const [password, setPassword] = useState('');
 
     const [confirmPassword, setConfirmPassword] = useState('');
+
+    const [showPassword, setShowPassword] = useState(false);
 
     const [loading, setLoading] = useState(false);
 
@@ -164,18 +166,52 @@ function ResetPasswordContent(){
 
                             <label>Nueva contraseña</label>
 
-                            <input
-                                type='password'
-                                value={password}
-                                onChange={(e)=>setPassword(e.target.value)}
-                                placeholder='********'
+                            <div
                                 style={{
-                                    padding:'14px',
-                                    borderRadius:'12px',
-                                    border:'1px solid #ddd',
-                                    outline:'none'
+                                    position:'relative'
                                 }}
-                            />
+                            >
+
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={password}
+                                    onChange={(e)=>setPassword(e.target.value)}
+                                    placeholder='********'
+                                    style={{
+                                        width:'100%',
+                                        padding:'14px',
+                                        paddingRight:'45px',
+                                        borderRadius:'12px',
+                                        border:'1px solid #ddd',
+                                        outline:'none',
+                                        boxSizing:'border-box'
+                                    }}
+                                />
+
+                                <button
+                                    type='button'
+                                    onClick={()=>setShowPassword(!showPassword)}
+                                    style={{
+                                        position:'absolute',
+                                        right:'12px',
+                                        top:'50%',
+                                        transform:'translateY(-50%)',
+                                        background:'transparent',
+                                        border:'none',
+                                        cursor:'pointer',
+                                        display:'flex',
+                                        alignItems:'center',
+                                        justifyContent:'center'
+                                    }}
+                                >
+                                    {showPassword ? (
+                                        <EyeOff size={18} color='#555' />
+                                    ) : (
+                                        <Eye size={18} color='#555' />
+                                    )}
+                                </button>
+
+                            </div>
 
                         </div>
 
@@ -189,18 +225,52 @@ function ResetPasswordContent(){
 
                             <label>Confirmar contraseña</label>
 
-                            <input
-                                type='password'
-                                value={confirmPassword}
-                                onChange={(e)=>setConfirmPassword(e.target.value)}
-                                placeholder='********'
+                            <div
                                 style={{
-                                    padding:'14px',
-                                    borderRadius:'12px',
-                                    border:'1px solid #ddd',
-                                    outline:'none'
+                                    position:'relative'
                                 }}
-                            />
+                            >
+
+                                <input
+                                    type={showPassword ? 'text' : 'password'}
+                                    value={confirmPassword}
+                                    onChange={(e)=>setConfirmPassword(e.target.value)}
+                                    placeholder='********'
+                                    style={{
+                                        width:'100%',
+                                        padding:'14px',
+                                        paddingRight:'45px',
+                                        borderRadius:'12px',
+                                        border:'1px solid #ddd',
+                                        outline:'none',
+                                        boxSizing:'border-box'
+                                    }}
+                                />
+
+                                <button
+                                    type='button'
+                                    onClick={()=>setShowPassword(!showPassword)}
+                                    style={{
+                                        position:'absolute',
+                                        right:'12px',
+                                        top:'50%',
+                                        transform:'translateY(-50%)',
+                                        background:'transparent',
+                                        border:'none',
+                                        cursor:'pointer',
+                                        display:'flex',
+                                        alignItems:'center',
+                                        justifyContent:'center'
+                                    }}
+                                >
+                                    {showPassword ? (
+                                        <EyeOff size={18} color='#555' />
+                                    ) : (
+                                        <Eye size={18} color='#555' />
+                                    )}
+                                </button>
+
+                            </div>
 
                         </div>
 

@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { Lock, CheckCircle } from 'lucide-react';
 import { useAuth } from '../Context/AuthContext';
 
-export default function ResetPasswordPage(){
+function ResetPasswordContent(){
 
     const searchParams = useSearchParams();
 
@@ -261,5 +261,17 @@ export default function ResetPasswordPage(){
             </div>
 
         </div>
+    )
+}
+
+export default function ResetPasswordPage(){
+
+    return(
+
+        <Suspense fallback={<div>Cargando...</div>}>
+
+            <ResetPasswordContent />
+
+        </Suspense>
     )
 }

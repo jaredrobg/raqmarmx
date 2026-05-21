@@ -32,7 +32,8 @@ export default async function ProductosFiltrados({ params }: Props) {
       : productos.filter((p) =>
           normalize(p.fields.marca || "").includes(normalize(filtro)) ||
           normalize(p.fields.nombre || "").includes(normalize(filtro)) ||
-          normalize(p.fields.temporada || "").includes(normalize(filtro))
+          normalize(p.fields.temporada || "").includes(normalize(filtro)) ||
+          normalize(p.fields.categoria || "").includes(normalize(filtro))
         );
 
   return (

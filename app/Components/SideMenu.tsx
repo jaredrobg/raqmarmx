@@ -287,10 +287,10 @@ const MenuCategoria = ({visible, onClose}: SubMenuProps)=>{
     }
 
     const lista = [
+        "Caballero",
+        "Dama",
         "Fragancia",
-        "Lente Solar",
-        "Lente Oftalmico",
-        "Accesorio",
+        "Lente Solar"
     ];
 
     return(

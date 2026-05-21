@@ -42,7 +42,7 @@ export default function Footer(){
                     <a href='https://www.facebook.com/share/1C7wS3djLk/?mibextid=wwXIfr' target='_blank' className='footer_option'>
                         <ImFacebook2 size={25} />
                     </a>
-                    <a href='https://www.instagram.com/opticos.raqmargdl?igsh=MXU0MG9hczIwMThhNg==' target='_blank' className='footer_option'>
+                    <a href='https://www.instagram.com/raqmarmx?igsh=MXU0MG9hczIwMThhNg==' target='_blank' className='footer_option'>
                         <FaInstagram size={25} />
                     </a>
                     <a href='https://www.tiktok.com/@opticagdl?_t=ZS-8zycpOf6OAR&_r=1' target='_blank' className='footer_option'>

@@ -352,6 +352,7 @@ const LoginPage = ({
             if (data.success){
 
                 login(data);
+                console.log("Data login: ", data);
 
                 setEmail("");
                 setPassword("");

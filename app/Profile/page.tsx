@@ -267,7 +267,7 @@ const SignupPage = ({visible, setVisible}: pageProps) =>{
                     <Button 
                         type={isDisabled || loading ? 'disabled':'submit'} 
                         disabled={isDisabled || loading}
-                        style={{width:"150px"}}
+                        style={{width:"90px"}}
 
                         onClick={(e: React.FormEvent<HTMLButtonElement>) =>
                             handleSubmit(e)
@@ -451,7 +451,7 @@ const LoginPage = ({
                     <Button
                         type={isDisabled || loading ? 'disabled':'submit'}
                         disabled={isDisabled || loading}
-                        style={{width:"140px"}}
+                        style={{width:"90px"}}
                         onClick={handleSubmit}
                     >
 

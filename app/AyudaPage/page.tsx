@@ -72,7 +72,7 @@ const ExpandedInfo = ({section} : {section: string})=>{
             case "envios":
                 return(
                     <>
-                    <p>Nuestros productos son enviados por medio de (proveedor de paqueteria).</p>
+                    <p>Nuestros productos son enviados por medio de Estafeta a cualquier parte de México.</p>
                     <p>Los tiempos de entrega pueden variar según la ubicación y la paquetería. El tiempo de entrega estimado es de 5 a 10 dias habiles</p>
                     <p>Si ya han pasado los 10 dias habiles desde que reslizaste el pago de tus articulos y estoes aun no han llegado, o si tienes 
                         alguna duda acerca del proceso de envio no dudes 

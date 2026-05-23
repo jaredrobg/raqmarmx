@@ -27,18 +27,19 @@ export default function Productos({productos = [], limit}: ProductosProps){
     const [visible, setVisible] = useState(false);
     const [producto, setProducto] = useState<ProductoFields>({} as ProductoFields);
     const [isMobile, setIsMobile] = useState(false);
-    const [visibleCount, setVisibleCount] = useState(10);
+    const [smallDesk, setSmallDesk] = useState(false);
+    const [visibleCount, setVisibleCount] = useState(isMobile? 10: smallDesk? 13 : 15);
     const [modalListasVisible, setModalListasVisible] = useState(false);
     const [selectedProductoId, setSelectedProductoId] = useState<string | null>(null);
     const [savedProducts, setSavedProducts] = useState<string[]>([]);
     const loadMoreRef = useRef<HTMLDivElement>(null);
-
     
     
     //verificacion de movil
     useEffect(()=>{
         const handleResize = ()=>{
             setIsMobile(window.innerWidth < 768);
+            setSmallDesk(window.innerWidth < 1150);
         }
         handleResize();
         window.addEventListener("resize", handleResize);
@@ -85,17 +86,19 @@ export default function Productos({productos = [], limit}: ProductosProps){
 
     let lista = safeProductos;
     if(limit){  
-        lista = lista.slice(0, isMobile ? limit : limit +5);
+        // lista = lista.slice(0, isMobile ? limit : limit +5);
+        lista = lista.slice(0, isMobile ? limit: smallDesk ? limit + 6 : limit + 8)
     }
     const disponibles = lista.filter(producto => producto.fields.cantidad > 0);
 
     
     // 👇 Scroll infinito: carga 8 más al llegar al final
     useEffect(() => {
+        const loadConst = isMobile ? 8 : smallDesk ? 9 : 12 ;
         const observer = new IntersectionObserver(
         (entries) => {
             if (entries[0].isIntersecting) {
-            setVisibleCount((prev) => Math.min(prev + 8, disponibles.length));
+            setVisibleCount((prev) => Math.min(prev + loadConst, disponibles.length));
             }
         },
         { threshold: 1 }

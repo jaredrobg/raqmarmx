@@ -50,7 +50,7 @@ export default async function HomePage({ productos }: HomePageProps) {
             <FadeIn direction='up'>
                 <div className='bubble_text'>Nuestros productos</div>
             </FadeIn>
-            <Productos productos={productosobt} limit={11}/>
+            <Productos productos={productosobt} limit={12}/>
 
             <div className='ver_mas'>
                  <Link href="/ProductosPage">

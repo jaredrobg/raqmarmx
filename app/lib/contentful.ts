@@ -60,6 +60,7 @@ export async function getProductos(): Promise<Entry<ProductoFields>[]> {
   const entries = await client.getEntries({
     content_type: "producto",
     order: ['fields.modelo'], // array de strings
+    limit: 1000,
   });
 
 

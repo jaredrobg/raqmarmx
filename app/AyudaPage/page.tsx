@@ -188,7 +188,7 @@ const FAQ = ()=>{
 const TerminosYCondiciones = ()=>{
     return(
         <>
-        <p><strong>Última actualización:</strong> 03/10/2025</p>
+        <p><strong>Última actualización:</strong> 26/05/2026</p>
 
       <section>
         <p><strong>1. Información del titular</strong></p>
@@ -238,6 +238,7 @@ const TerminosYCondiciones = ()=>{
           2. Completa tus datos de envío y método de pago.<br />
           3. Recibirás una confirmación de tu pedido por correo electrónico.<br />
           4. Nos reservamos el derecho a rechazar pedidos en caso de falta de stock o problemas de pago.
+          5. Al realizar una compra de fragancias o perfumeria no aplican terminos de devolucion, cambio o garantia. Una vez enviado el producto el pedido no puede ser canceldo.
         </p>
       </section>
 

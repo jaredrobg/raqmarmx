@@ -237,7 +237,7 @@ const TerminosYCondiciones = ()=>{
           1. Elige tus productos y añádelos al carrito.<br />
           2. Completa tus datos de envío y método de pago.<br />
           3. Recibirás una confirmación de tu pedido por correo electrónico.<br />
-          4. Nos reservamos el derecho a rechazar pedidos en caso de falta de stock o problemas de pago.
+          4. Nos reservamos el derecho a rechazar pedidos en caso de falta de stock o problemas de pago.<br />
           5. Al realizar una compra de fragancias o perfumeria no aplican terminos de devolucion, cambio o garantia. Una vez enviado el producto el pedido no puede ser canceldo.
         </p>
       </section>

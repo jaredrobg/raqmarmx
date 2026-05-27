@@ -5,7 +5,8 @@ import { ProductoFields } from "../lib/contentful";
 import { Entry } from "contentful";
 import { useState } from 'react';
 import { Search } from 'lucide-react';
-import { SearchX } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 
 
@@ -16,6 +17,14 @@ interface HomePageProps {
 export default function ProductosPage({ productos }: HomePageProps){
 
     const[searchTerm, setSearchTerm] = useState("");
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const query = searchParams?.get('search');
+        if (query) {
+            setSearchTerm(query);
+        }
+    }, [searchParams]);
 
     const filtered = productos?.filter((producto)=>{
         const nombre= producto.fields.nombre?.toLocaleLowerCase();

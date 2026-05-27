@@ -6,6 +6,7 @@ import { Entry } from "contentful";
 import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { useEffect } from 'react';
+import { useRef } from 'react';
 
 
 
@@ -20,16 +21,24 @@ export default function ProductosPage({ productos }: HomePageProps){
         const params = new URLSearchParams(window.location.search);
         return params.get("search") || "";
     });
+    const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
+    // useEffect(() => {
+    //     if (typeof window === "undefined") return;
+
+    //     const params = new URLSearchParams(window.location.search);
+    //     const query = params.get("search");
+
+    //     if (query) {
+    //         setSearchTerm(query);
+    //     }
+    // }, []);
     useEffect(() => {
-        if (typeof window === "undefined") return;
-
-        const params = new URLSearchParams(window.location.search);
-        const query = params.get("search");
-
-        if (query) {
-            setSearchTerm(query);
-        }
+        return () => {
+            if (debounceRef.current) {
+                clearTimeout(debounceRef.current);
+            }
+        };
     }, []);
 
     const filtered = productos?.filter((producto)=>{
@@ -52,7 +61,32 @@ export default function ProductosPage({ productos }: HomePageProps){
                     id='buscador'
                     placeholder="Buscar producto..."
                     value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        setSearchTerm(value);
+
+                        // Debounce para no actualizar URL en cada tecla inmediata
+                        if (debounceRef.current) {
+                            clearTimeout(debounceRef.current);
+                        }
+
+                        debounceRef.current = setTimeout(() => {
+                            const params = new URLSearchParams(window.location.search);
+
+                            if (value) {
+                                params.set("search", value);
+                            } else {
+                                params.delete("search");
+                            }
+
+                            const newUrl =
+                                value
+                                    ? `${window.location.pathname}?${params.toString()}`
+                                    : window.location.pathname;
+
+                            window.history.replaceState({}, "", newUrl);
+                        }, 300);
+                    }}
                     className="buscador"
                 />
                 <label htmlFor='buscador' className='buscador_icon'><Search /></label>

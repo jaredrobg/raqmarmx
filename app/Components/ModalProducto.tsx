@@ -151,13 +151,19 @@ const ModalProducto = ({ producto, visible, onClose, onProductSaved, onProductRe
       style={{ display: visible ? "block" : "none" }}
     >
       {visible && (
-        <div className="ModalProducto_closer_overlay" onClick={onClose}></div>
+        <div className="ModalProducto_closer_overlay" onClick={(e)=>{
+            minimizeImage(e);
+            onClose()
+           }}></div>
       )}
       <div
         className="ModalProducto_container scroll-custom"
         style={imgClassName === "ExpandProductImage" ? { backgroundColor: "#222" } : {}}
       >
-        <Button type="closeButton" onClick={onClose}>
+        <Button type="closeButton" onClick={(e)=>{
+            minimizeImage(e);
+            onClose()
+           }}>
           X
         </Button>
         {(productoState.fields) ? (

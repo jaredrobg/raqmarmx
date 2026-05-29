@@ -3,34 +3,33 @@ import '../page.css';
 import Productos from '../Components/Productos';
 import { ProductoFields } from "../lib/contentful";
 import { Entry } from "contentful";
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search } from 'lucide-react';
-import { useEffect } from 'react';
-import { useRef } from 'react';
-import { useSearchParams } from 'next/navigation';
-
-
+import { Suspense } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 interface HomePageProps {
-  productos: Entry<ProductoFields>[];
+    productos: Entry<ProductoFields>[];
 }
 
-export default function ProductosPage({ productos }: HomePageProps){
-
-    const [searchTerm, setSearchTerm] = useState(() => {
-        if (typeof window === "undefined") return "";
-        const params = new URLSearchParams(window.location.search);
-        return params.get("search") || "";
-    });
+function ProductosPageInner({ productos }: HomePageProps) {
+    const searchParams = useSearchParams();
+    const router = useRouter();
+    const inputRef = useRef<HTMLInputElement>(null);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-    const inputRef = useRef<HTMLInputElement>(null);
-
-    const searchParams = useSearchParams();
+    const [searchTerm, setSearchTerm] = useState(
+        searchParams.get("search") || ""
+    );
 
     useEffect(() => {
-        const focus = searchParams.get("focus");
-        if (focus === "search") {
+        return () => {
+            if (debounceRef.current) clearTimeout(debounceRef.current);
+        };
+    }, []);
+
+    useEffect(() => {
+        if (searchParams.get("focus") === "search") {
             setTimeout(() => {
                 inputRef.current?.focus();
                 inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -38,32 +37,23 @@ export default function ProductosPage({ productos }: HomePageProps){
         }
     }, [searchParams]);
 
-    useEffect(() => {
-        return () => {
-            if (debounceRef.current) {
-                clearTimeout(debounceRef.current);
-            }
-        };
-    }, []);
-
-    const filtered = productos?.filter((producto)=>{
-        const nombre= producto.fields.nombre?.toLocaleLowerCase();
+    const filtered = productos?.filter((producto) => {
+        const nombre = producto.fields.nombre?.toLocaleLowerCase();
         const modelo = producto.fields.modelo?.toLocaleLowerCase();
         const material = producto.fields.material?.toLocaleLowerCase();
         const categoria = producto.fields.categoria?.toLocaleLowerCase();
         const marca = producto.fields.marca?.toLocaleLowerCase();
         const color = producto.fields.color?.toLocaleLowerCase();
         const term = searchTerm.toLocaleLowerCase();
-        return nombre?.includes(term) || modelo?.includes(term) || categoria?.includes(term) || marca?.includes(term) || material?.includes(term) ||color?.includes(term);
+        return nombre?.includes(term) || modelo?.includes(term) || categoria?.includes(term) || marca?.includes(term) || material?.includes(term) || color?.includes(term);
     });
-    
-    
-    return(
+
+    return (
         <div className='ProductosPage'>
             <div className='buscador_container'>
                 <input
-                    type="text"
                     ref={inputRef}
+                    type="text"
                     id='buscador'
                     placeholder="Buscar producto..."
                     value={searchTerm}
@@ -71,34 +61,29 @@ export default function ProductosPage({ productos }: HomePageProps){
                         const value = e.target.value;
                         setSearchTerm(value);
 
-                        // Debounce para no actualizar URL en cada tecla inmediata
-                        if (debounceRef.current) {
-                            clearTimeout(debounceRef.current);
-                        }
+                        if (debounceRef.current) clearTimeout(debounceRef.current);
 
                         debounceRef.current = setTimeout(() => {
-                            const params = new URLSearchParams(window.location.search);
-
                             if (value) {
-                                params.set("search", value);
+                                router.replace(`/ProductosPage?search=${encodeURIComponent(value)}`);
                             } else {
-                                params.delete("search");
+                                router.replace('/ProductosPage');
                             }
-
-                            const newUrl =
-                                value
-                                    ? `${window.location.pathname}?${params.toString()}`
-                                    : window.location.pathname;
-
-                            window.history.replaceState({}, "", newUrl);
                         }, 300);
                     }}
                     className="buscador"
                 />
                 <label htmlFor='buscador' className='buscador_icon'><Search /></label>
             </div>
-
-            <Productos productos={filtered}/>
+            <Productos productos={filtered} />
         </div>
-    )
+    );
+}
+
+export default function ProductosPage({ productos }: HomePageProps) {
+    return (
+        <Suspense fallback={<div>Cargando...</div>}>
+            <ProductosPageInner productos={productos} />
+        </Suspense>
+    );
 }

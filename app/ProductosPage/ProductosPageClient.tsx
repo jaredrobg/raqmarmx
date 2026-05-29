@@ -7,6 +7,7 @@ import { useState } from 'react';
 import { Search } from 'lucide-react';
 import { useEffect } from 'react';
 import { useRef } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 
 
@@ -23,16 +24,20 @@ export default function ProductosPage({ productos }: HomePageProps){
     });
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
-    // useEffect(() => {
-    //     if (typeof window === "undefined") return;
+    const inputRef = useRef<HTMLInputElement>(null);
 
-    //     const params = new URLSearchParams(window.location.search);
-    //     const query = params.get("search");
+    const searchParams = useSearchParams();
 
-    //     if (query) {
-    //         setSearchTerm(query);
-    //     }
-    // }, []);
+    useEffect(() => {
+        const focus = searchParams.get("focus");
+        if (focus === "search") {
+            setTimeout(() => {
+                inputRef.current?.focus();
+                inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 100);
+        }
+    }, [searchParams]);
+
     useEffect(() => {
         return () => {
             if (debounceRef.current) {
@@ -58,6 +63,7 @@ export default function ProductosPage({ productos }: HomePageProps){
             <div className='buscador_container'>
                 <input
                     type="text"
+                    ref={inputRef}
                     id='buscador'
                     placeholder="Buscar producto..."
                     value={searchTerm}

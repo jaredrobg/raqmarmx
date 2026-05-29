@@ -13,6 +13,7 @@ import { GlobalProvider } from "./Context/GlobalContext";
 import SideMenu from "./Components/SideMenu";
 import { ShoppingBagModule } from "./ShoppingBag/page";
 import { Toaster } from 'react-hot-toast';
+import SearchButton from './Components/SearchButton';
 
 
 const geistSans = Geist({
@@ -61,6 +62,7 @@ export default function RootLayout({
                 transform: 'translate(-50%, -50%)',
               }}
             />
+            <SearchButton />
             <WhatsAppButton />
             <AvisoMantenimiento />
             <Footer />

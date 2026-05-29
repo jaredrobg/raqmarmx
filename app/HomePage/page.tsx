@@ -5,7 +5,6 @@ import Productos from '../Components/Productos';
 import FadeIn from '../Components/FadeIn';
 import { getProductos, ProductoFields } from "../lib/contentful";
 import { Entry } from "contentful";
-import {Glasses} from 'lucide-react';
 import { LuAward } from "react-icons/lu";
 import Link from 'next/link';
 

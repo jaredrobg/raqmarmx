@@ -882,25 +882,31 @@ a{
   flex-direction: column;
   height: 400px;
   align-items: center;
+  position: relative; 
 } 
-.card_image_modal{
-  flex: 3;
-  display: inline-block;
-  position: relative;
-	width: 250px;
-	height: 250px;
-	margin: 15px;
-	border-radius: 7px;
-  border: 1px solid #ccc;
+.card_image_modal {
+    flex: 3;
+    display: inline-block;
+    position: relative;
+    width: 250px;
+    height: 250px;
+    margin: 15px;
+    border-radius: 7px;
+    border: 1px solid #ccc;
+    overflow: hidden; /* ← necesario para que fill funcione y flechas no se salgan */
 }
+
     /* para expandir la imagen */
-    .ExpandProductImage{
+    .ExpandProductImage {
       position: absolute;
-      top: -1;
-      left: -1;
-      width: 102%;
-      height: 102%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       border-radius: 20px;
+      overflow: hidden;
+      z-index: 5;
+      background: #222;
     }
 
 .card_content_modal_inner_div{
@@ -1543,15 +1549,17 @@ a{
     display: flex;
     flex-direction: column;
   }
-  .card_content_modal.first{
-    flex : 3;
+  .card_content_modal.first {
+    flex: 3;
     display: flex;
     flex-direction: row;
     height: 250px;
     align-items: center;
     width: 65%;
-  } 
-  .card_image_modal{
+    position: relative; /* ← ancla el ExpandProductImage */
+  }
+
+  .card_image_modal {
     flex: 2;
     display: inline-block;
     position: relative;
@@ -1560,16 +1568,20 @@ a{
     margin: 15px;
     border-radius: 7px;
     border: 1px solid #ccc;
+    overflow: hidden;
   }
+
       /* para expandir la imagen */
       .ExpandProductImage{
-        position: absolute;
-        top: -1;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60%;
-        height: 100%;
+        position: fixed;
+        left: 75%;
+        transform: translate(-50%, 0);
+        width: 70vw;
+        height: 75vh;      /* ← más altura */
         border-radius: 20px;
+        overflow: hidden;
+        background: #222;
+        margin: 0;  
       }
 
   .card_content_modal_inner_div{
@@ -1834,3 +1846,54 @@ a{
         transform: rotate(360deg);
     }
 }
+
+
+/* 4. Agrega esto a tu page.css */
+.card-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.85);
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 20;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.card-image:hover .card-arrow,
+.card_image_modal:hover .card-arrow { 
+  opacity: 1;
+}
+.card-arrow-left  { left: 6px; }
+.card-arrow-right { right: 6px; }
+
+.card-dots {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  padding: 4px 0 2px;
+}
+.card-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ccc;
+  transition: background 0.2s;
+}
+.card-dot.active { background: #333; }
+.ExpandProductImage:hover .card-arrow {
+  opacity: 1;
+}
+.card-dot.expanded {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #333;
+  transition: background 0.2s;
+}
+.card-dot.expanded.active { background: #ccc; }

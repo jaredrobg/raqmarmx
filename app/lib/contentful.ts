@@ -25,6 +25,20 @@ export interface ProductoFields {
       };
     };
   };
+  imagen2?: {
+    fields: {
+      file: {
+        url: string;
+      };
+    };
+  };
+  imagen3?: {
+    fields: {
+      file: {
+        url: string;
+      };
+    };
+  };
   contentful_product_id: string;
   quantity: number;
 
@@ -40,6 +54,20 @@ export interface ProductoFields {
     material: string;
     precio: number;
     imagen?: {
+      fields: {
+        file: {
+          url: string;
+        };
+      };
+    };
+    imagen2?: {
+      fields: {
+        file: {
+          url: string;
+        };
+      };
+    };
+    imagen3?: {
       fields: {
         file: {
           url: string;

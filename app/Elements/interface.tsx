@@ -74,6 +74,20 @@ export interface Producto {
             };
             };
         };
+        imagen2?: {
+            fields: {
+            file: {
+                url: string;
+            };
+            };
+        };
+        imagen3?: {
+            fields: {
+            file: {
+                url: string;
+            };
+            };
+        };
         contentful_product_id: string;
         quantity: number;
     }

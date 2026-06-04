@@ -19,6 +19,112 @@ interface ProductosProps {
     limit?: number;
 }
 
+function useImageCarousel(images: string[], isMobile: boolean) {
+    const [idx, setIdx] = useState(0);
+    const touchStartX = useRef<number | null>(null);
+
+    const prev = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIdx(i => (i - 1 + images.length) % images.length);
+    };
+    const next = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        setIdx(i => (i + 1) % images.length);
+    };
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+    const onTouchEnd = (e: React.TouchEvent) => {
+        if (touchStartX.current === null) return;
+        const diff = touchStartX.current - e.changedTouches[0].clientX;
+        if (Math.abs(diff) > 40) {
+            setIdx(i => diff > 0
+                ? (i + 1) % images.length
+                : (i - 1 + images.length) % images.length
+            );
+        }
+        touchStartX.current = null;
+    };
+
+    return {
+        idx,
+        prev,
+        next,
+        onTouchStart: isMobile ? onTouchStart : undefined,
+        onTouchEnd: isMobile ? onTouchEnd : undefined,
+    };
+}
+
+function CardImage({ producto, isMobile, onClick }: {
+    producto: Entry<ProductoFields>;
+    isMobile: boolean;
+    onClick: () => void;
+}) {
+    const images = [
+        producto.fields.imagen?.fields.file.url,
+        producto.fields.imagen2?.fields.file.url,
+        producto.fields.imagen3?.fields.file.url,
+    ].filter(Boolean) as string[];
+
+    const { idx, prev, next, onTouchStart, onTouchEnd } = useImageCarousel(images, isMobile);
+    const multi = images.length > 1;
+
+    return (
+        <>
+            <div
+                className="card-image"
+                onClick={onClick}
+                onTouchStart={onTouchStart}
+                onTouchEnd={onTouchEnd}
+                style={{ position: "relative", overflow: "hidden" }}
+            >
+                {images.map((url, i) => (
+                    <Image
+                        key={url}
+                        src={`https:${url}`}
+                        alt={`${producto.fields.nombre} ${i + 1}`}
+                        fill
+                        sizes="max-width: 100%; height: auto;"
+                        style={{
+                            objectFit: "cover",
+                            borderRadius: "7px",
+                            transition: "transform 0.25s ease",
+                            transform: `translateX(${(i - idx) * 100}%)`,
+                        }}
+                    />
+                ))}
+
+                {multi && !isMobile && (
+                    <>
+                        <button
+                            onClick={prev}
+                            className="card-arrow card-arrow-left"
+                            aria-label="Imagen anterior"
+                        >‹</button>
+                        <button
+                            onClick={next}
+                            className="card-arrow card-arrow-right"
+                            aria-label="Siguiente imagen"
+                        >›</button>
+                    </>
+                )}
+            </div>
+
+            {multi && (
+                <div className="card-dots">
+                    {images.map((_, i) => (
+                        <span
+                            key={i}
+                            className={`card-dot${i === idx ? " active" : ""}`
+                        }/>
+                    ))}
+                </div>
+            )}
+        </>
+    );
+}
+
 export default function Productos({productos = [], limit}: ProductosProps){
     const safeProductos = Array.isArray(productos) ? productos : [];
     const {addToShoppingBag, discountedTotal} = useShoppingBag();
@@ -33,9 +139,7 @@ export default function Productos({productos = [], limit}: ProductosProps){
     const [selectedProductoId, setSelectedProductoId] = useState<string | null>(null);
     const [savedProducts, setSavedProducts] = useState<string[]>([]);
     const loadMoreRef = useRef<HTMLDivElement>(null);
-    
-    
-    //verificacion de movil
+
     useEffect(()=>{
         const handleResize = ()=>{
             setIsMobile(window.innerWidth < 768);
@@ -43,7 +147,6 @@ export default function Productos({productos = [], limit}: ProductosProps){
         }
         handleResize();
         window.addEventListener("resize", handleResize);
-
         return ()=> window.removeEventListener("resize", handleResize);
     },[]);
 
@@ -56,67 +159,35 @@ export default function Productos({productos = [], limit}: ProductosProps){
         setFecha(new Date().toLocaleString('es-ES'));
     },[]);
 
-
-    // useEffect(() => {
-    //     if (!user) return;
-
-    //     const handler = async () => {
-    //         console.log("Productos mandados a registrar_productos: ");
-    //         console.log(productos);
-    //         try {
-    //             const response = await fetch(`${URL}/registrar_productos_raqmar.php`, {
-    //             method: "POST",
-    //             headers: { "Content-Type": "application/json" },
-    //             body: JSON.stringify({ user_id: user.internal_id, productos }),
-    //             });
-
-    //             // const text = response.text();
-    //             // console.log("Respuesta de carga de productos:");
-    //             // console.log(text);
-                
-    //             const data = await response.json();
-    //             if (!data.success) console.error("Error sold products:", data.message);
-    //         } catch (err) {
-    //             console.error(err);
-    //         }
-    //     }
-
-    //     handler();
-    // }, []);
-
     let lista = safeProductos;
-    if(limit){  
-        // lista = lista.slice(0, isMobile ? limit : limit +5);
+    if(limit){
         lista = lista.slice(0, isMobile ? limit: smallDesk ? limit + 6 : limit + 8)
     }
     const disponibles = lista.filter(producto => producto.fields.cantidad > 0);
 
-    
-    // 👇 Scroll infinito: carga 8 más al llegar al final
     useEffect(() => {
-        const loadConst = isMobile ? 8 : smallDesk ? 9 : 12 ;
+        const loadConst = isMobile ? 8 : smallDesk ? 9 : 12;
         const observer = new IntersectionObserver(
-        (entries) => {
-            if (entries[0].isIntersecting) {
-            setVisibleCount((prev) => Math.min(prev + loadConst, disponibles.length));
-            }
-        },
-        { threshold: 1 }
+            (entries) => {
+                if (entries[0].isIntersecting) {
+                    setVisibleCount((prev) => Math.min(prev + loadConst, disponibles.length));
+                }
+            },
+            { threshold: 1 }
         );
         if (loadMoreRef.current) observer.observe(loadMoreRef.current);
         return () => observer.disconnect();
     }, [disponibles.length]);
 
     const productosVisibles: Entry<ProductoFields>[] = disponibles.slice(0, isMobile ? visibleCount : visibleCount + 5);
-    
+
     useEffect(() => {
         const timer = setTimeout(() => {
-        import("./ModalProducto");
+            import("./ModalProducto");
         }, 2000);
         return () => clearTimeout(timer);
     }, []);
 
-    // Obtencion de productos guardados
     useEffect(() => {
         if (user){
             const fetchSavedProducts = async () =>{
@@ -126,7 +197,6 @@ export default function Productos({productos = [], limit}: ProductosProps){
                         headers: { "Content-Type": "application/json" },
                         body: JSON.stringify({ user_id: user.internal_id }),
                     });
-
                     const data = await res.json();
                     if (data.success){
                         const productosGuardados = data.listas?.map((item: { product_id: string }) => item.product_id);
@@ -148,10 +218,10 @@ export default function Productos({productos = [], limit}: ProductosProps){
             return [...prev, productId];
         });
     };
+
     const handleProductRemoved = (productId: string) => {
         setSavedProducts(prev => prev.filter(id => id !== productId));
     };
-
 
     if (disponibles.length === 0) {
         return <p style={{ textAlign: "center" }}>No hay productos disponibles</p>;
@@ -161,28 +231,27 @@ export default function Productos({productos = [], limit}: ProductosProps){
         setSelectedProductoId(productoId);
         setModalListasVisible(true);
     }
-    
+
     return(
         <div className="productosContainer">
             { productosVisibles?.map((producto)=>(
                 <div key={producto.sys.id}>
-                <FadeIn direction='up'>    
-                    <div key={producto.sys.id} className="card" >
-                        <div className="card-image" onClick={()=>{ setProducto({...producto.fields, contentful_product_id: producto.sys.id}); setVisible(true);}}>
-                            <Image 
-                                src={`https:${producto.fields.imagen?.fields.file.url}`}
-                                alt={producto.fields.nombre}
-                                fill
-                                sizes='max-width: 100%; height: auto;'
-                                style={{objectFit: "cover", borderRadius:"7px"}}
-                            />
-                        </div>    
+                <FadeIn direction='up'>
+                    <div key={producto.sys.id} className="card">
+                        <CardImage
+                            producto={producto}
+                            isMobile={isMobile}
+                            onClick={() => {
+                                setProducto({...producto.fields, contentful_product_id: producto.sys.id});
+                                setVisible(true);
+                            }}
+                        />
                         <div className="card-content">
                             <h3>{producto.fields.nombre}</h3>
                             <p className="card_nombre">{producto.fields.modelo}</p>
                             <p className="card_precio_antes">{Number(producto.fields.precio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
                             <p className="card_precio">{Number((producto.fields.precio) * discountedTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
-                            <Button type='addButton' 
+                            <Button type='addButton'
                                 onClick={()=>addToShoppingBag({
                                     user_id: user ? user.internal_id : 0,
                                     contentful_product_id: producto.sys.id,
@@ -196,7 +265,7 @@ export default function Productos({productos = [], limit}: ProductosProps){
                                     estatus_pedido: '',
                                     order_date: '',
                                     cantidad: 0
-                                })} 
+                                })}
                             ><ShoppingBag size={isMobile ? 9 : 15} />+</Button>
                             <Button type='addButton'
                                 onClick={()=>abrirModalListas(producto.sys.id)}
@@ -211,18 +280,18 @@ export default function Productos({productos = [], limit}: ProductosProps){
 
             {visibleCount < disponibles.length && (
                 <div ref={loadMoreRef} style={{textAlign:"center", marginTop:"50px", marginBottom:"-70px", paddingBottom:"70px", gridColumn:"1/-1", fontSize:"15px" }}>
-                <p>Cargando más productos...</p>
+                    <p>Cargando más productos...</p>
                 </div>
             )}
-            <ModalProducto 
-            visible={visible} 
-            onClose={onClose} 
-            producto={producto} 
-            onProductSaved={handleProductSaved}
-            onProductRemoved={handleProductRemoved}
-            listButton={true}
+            <ModalProducto
+                visible={visible}
+                onClose={onClose}
+                producto={producto}
+                onProductSaved={handleProductSaved}
+                onProductRemoved={handleProductRemoved}
+                listButton={true}
             />
-            <ModalListas 
+            <ModalListas
                 visible={modalListasVisible}
                 onClose={() => setModalListasVisible(false)}
                 productoId={selectedProductoId}

@@ -82,6 +82,14 @@ function ProductosPageInner({ productos }: HomePageProps) {
         const categoria = producto.fields.categoria?.toLocaleLowerCase();
         const marca     = producto.fields.marca?.toLocaleLowerCase();
         const color     = producto.fields.color?.toLocaleLowerCase();
+        if(searchTerm.includes("perfume")){
+            setSearchTerm(searchTerm.replace(/\bperfume\b/gi, "fragancia"));
+        }
+        if (searchTerm.includes("fragancias") || searchTerm.includes("perfumes")) {
+            if (categoria?.includes("fragancia") || nombre?.includes("fragancia")) {
+                return true;
+            }
+        }
         const term      = searchTerm.toLocaleLowerCase();
 
         const matchSearch =

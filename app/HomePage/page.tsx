@@ -17,6 +17,7 @@ interface HomePageProps {
 
 export default async function HomePage({ productos }: HomePageProps) {
     const productosobt: Entry<ProductoFields>[] = await getProductos();
+    const soloFragancias = productosobt.filter(producto => producto.fields.categoria?.includes("fragancia"));
     
     
     return(
@@ -49,7 +50,7 @@ export default async function HomePage({ productos }: HomePageProps) {
             <FadeIn direction='up'>
                 <div className='bubble_text'>Nuestros productos</div>
             </FadeIn>
-            <Productos productos={productosobt} limit={12}/>
+            <Productos productos={soloFragancias} limit={12}/>
 
             <div className='ver_mas'>
                  <Link href="/ProductosPage">

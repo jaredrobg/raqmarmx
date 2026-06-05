@@ -213,7 +213,7 @@ const ModalProducto = ({ producto, visible, onClose, onProductSaved, onProductRe
                     type="backButton"
                     onClick={(e: React.FormEvent) => minimizeImage(e)}
                   >
-                    <ArrowLeft size={30} />
+                    <ArrowLeft size={25} color="black" style={{backgroundColor: "white", borderRadius: "50%"}} />
                   </Button>
                 )}
 

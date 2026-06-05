@@ -641,9 +641,10 @@ a{
 	height: 155px;
 	margin: 15px auto;
 	border-radius: 7px;
-  border: 1px solid #ccc;
+  /* border: 1px solid #eee; */
   cursor: pointer;
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 .card-content{
 	font-size: 10px;
@@ -802,6 +803,12 @@ a{
   box-shadow: 0 2px 16px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06);
   border: 1px solid rgba(0,0,0,0.07);
 }
+@media(max-width: 700px){
+  .buscador_container{
+    margin-left: 0px; 
+  }
+}
+
 .buscador{
   padding: 0px 7px;
   border: none;
@@ -1508,7 +1515,6 @@ a{
     .card-image{
       height: 240px;
       border-radius: 10px;
-      border: 1px solid #ccc;
     }
     .card-content{
       font-size: 15px;
@@ -1576,8 +1582,8 @@ a{
         position: fixed;
         left: 75%;
         transform: translate(-50%, 0);
-        width: 70vw;
-        height: 75vh;      /* ← más altura */
+        width: 70vh;
+        height: 70vh;      /* ← más altura */
         border-radius: 20px;
         overflow: hidden;
         background: #222;
@@ -1897,3 +1903,8 @@ a{
   transition: background 0.2s;
 }
 .card-dot.expanded.active { background: #ccc; }
+.filtros_btn {
+  position: absolute;
+  top: 2px;
+  right: 0;
+}

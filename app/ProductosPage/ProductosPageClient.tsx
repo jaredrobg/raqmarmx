@@ -181,6 +181,15 @@ function ProductosPageInner({ productos }: HomePageProps) {
                         }}
                         className="buscador"
                     />
+                    <X size={20} 
+                        style={{ 
+                            cursor: "pointer",
+                            marginRight: "8px", 
+                            color: "#888",
+                            visibility: searchTerm ? "visible" : "hidden",
+                        }} 
+                        onClick={() => setSearchTerm("")}
+                    />
                     <label htmlFor='buscador' className='buscador_icon'><Search /></label>
                 </div>
                 {/* Botón filtros */}

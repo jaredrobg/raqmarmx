@@ -5,7 +5,7 @@ import Header from './Components/Header';
 import { AuthProvider } from "./Context/AuthContext";
 import { ShoppingBagProvider } from "./Context/ShoppingBagContext";
 import Footer from "./Components/Footer";
-import { WhatsAppButton } from "./Elements/Elements";
+import { WhatsAppButton, LocationButton } from "./Elements/Elements";
 import DisableConsole from "./DisableConsole";
 import ScrollToTop from "./Components/ScrollToTop";
 import AvisoMantenimiento from "./Components/AvisoMantenimiento";
@@ -86,6 +86,7 @@ export default function RootLayout({
             />
             <SearchButton />
             <WhatsAppButton />
+            <LocationButton />
             <AvisoMantenimiento />
             <Footer />
           </ShoppingBagProvider>

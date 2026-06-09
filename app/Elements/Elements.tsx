@@ -1,6 +1,7 @@
 import './../page.css';
 import Image from 'next/image';
-import { FaWhatsapp } from 'react-icons/fa';
+import { FaWhatsapp, FaMapMarkerAlt} from 'react-icons/fa';
+import Link from 'next/link';
 
 
 interface ButtonProps{
@@ -83,5 +84,16 @@ const WhatsAppButton = ()=>{
     </a>
   );
 }
+const LocationButton = ()=>{
+    return (
+    <Link
+      href="/DireccionesPage"
+      className="search-float-button location-button"
+    >
+      <FaMapMarkerAlt size={27} strokeWidth={.5} color='#4973e6'/>
+    </Link>
+  );
+}
 
-export {Button, LogginButton, WhatsAppButton}
+
+export {Button, LogginButton, WhatsAppButton, LocationButton}

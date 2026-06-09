@@ -1408,6 +1408,12 @@ a{
 .search-float-button:active {
   transform: scale(0.97);
 }
+.location-button{
+  bottom: 12vh;
+  left: 20px;
+  width: 46px;
+  height: 46px;
+}
 
 
 

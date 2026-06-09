@@ -87,7 +87,7 @@ const WhatsAppButton = ()=>{
 const LocationButton = ()=>{
     return (
     <Link
-      href="/DireccionesPage"
+      href="/Sucursales"
       className="search-float-button location-button"
     >
       <FaMapMarkerAlt size={27} strokeWidth={.5} color='#4973e6'/>

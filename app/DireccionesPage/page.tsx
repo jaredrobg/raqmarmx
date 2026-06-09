@@ -30,7 +30,7 @@ export default function DireccionesPage(){
                 <Button type='backButton' style={{color:"#666", top:"90px"}}><Link href='/Profile'><ArrowLeft size={28}/></Link></Button>
                 <h3 style={{textAlign:"center"}}>Mis Direcciones de Envio</h3>
             </div>
-                <DireccionesComponent  setVisible={setVisible} visible={true} selector={false} setDireccionesVisible={function (direcciones: boolean): void {
+                <DireccionesComponent key="direcciones-page"  setVisible={setVisible} visible={true} selector={false} setDireccionesVisible={function (direcciones: boolean): void {
                 throw new Error('Function not implemented.');
             } } direccionSelected={{
                 internal_id: 0,
@@ -237,22 +237,18 @@ export const RegistrarDireccion = ({
 
     // Solo México usa API de CP
     useEffect(() => {
-        if (!isMexico || codigoPostal.length !== 5) return;
+        if (codigoPostal.length !== 5) return;
 
         const fetchCP = async () => {
             setLoadingCP(true);
             try {
-                const res = await fetch(`https://sepomex.icalialabs.com/api/v1/zip_codes?zip_code=${codigoPostal}`);
+                const res = await fetch(`https://sepomex.razekiel.com/zip_code/${codigoPostal}`);
                 const data = await res.json();
 
-                if (data.zip_codes.length > 0) {
-                    const info = data.zip_codes[0];
-
-                    setEstado(info.d_estado);
-                    setMunicipio(info.d_mnpio);
-
-                    const coloniasList = data.zip_codes.map((c:any)=>c.d_asenta);
-                    setColonias(coloniasList);
+                if (data && !data.error) {
+                    setEstado(data.estado);
+                    setMunicipio(data.municipio);
+                    setColonias(data.colonias); // array de strings
                 } else {
                     setColonias([]);
                 }
@@ -263,7 +259,7 @@ export const RegistrarDireccion = ({
         };
 
         fetchCP();
-    }, [codigoPostal, isMexico]);
+    }, [codigoPostal]);
 
     const handleBack = ()=>{
         setVisible(true);
@@ -374,10 +370,20 @@ export const RegistrarDireccion = ({
                         {loadingCP && <p>Cargando datos...</p>}
 
                         <label>Estado</label>
-                        <input className='input-text' value={estado} disabled />
+                        <input 
+                            className='input-text' 
+                            value={estado} 
+                            onChange={(e) => setEstado(e.target.value)}
+                            placeholder="Estado"
+                        />
 
                         <label>Municipio</label>
-                        <input className='input-text' value={municipio} disabled />
+                        <input 
+                            className='input-text' 
+                            value={municipio} 
+                            onChange={(e) => setMunicipio(e.target.value)}
+                            placeholder="Municipio"
+                        />
 
                         <label>Colonia</label>
                         {colonias.length > 0 ? (
@@ -421,7 +427,7 @@ export const RegistrarDireccion = ({
                 <label>Nombre De Destinatario*</label>
                 <input className='input-text' value={nombreCompleto} onChange={(e)=>setNombreCompleto(e.target.value)} />
 
-                <label>Calle*</label>
+                <label>Calle y numero*</label>
                 <input className='input-text' value={calle} onChange={(e)=>setCalle(e.target.value)} />
 
                 <label>Telefono*</label>

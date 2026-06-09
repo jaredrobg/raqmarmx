@@ -89,6 +89,7 @@ export const ShoppingBagModule = () => {
         {!loginVisible || !signupVisible &&<h3 style={{marginTop:"30px", textAlign:"center"}}>{direccionesVisible?"Selecciona Direccion":"Mi Carrito"}</h3>}
         {direccionesVisible &&
         <DireccionesComponent 
+          key="direcciones-selector"
           selector={true} 
           visible={direccionesVisible} 
           direccionSelected={direccionSelected} 
@@ -284,6 +285,7 @@ const ShoppingBag = () => {
       {!loginVisible && !signupVisible &&<h3 style={{marginTop:"30px", textAlign:"center"}}>{direccionesVisible?"Selecciona Direccion":"Mi Carrito"}</h3>}
         {direccionesVisible &&
         <DireccionesComponent 
+          key="direcciones-selector"
           selector={true} 
           visible={direccionesVisible} 
           direccionSelected={direccionSelected} 

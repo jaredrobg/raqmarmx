@@ -134,7 +134,7 @@ export const DireccionesComponent = ({selector, visible, setVisible, setDireccio
                 <p className='direcciones_not_loaded'>Cargando...</p>
             ): (
                 direcciones.length === 0 ? (
-                    <p className='direcciones_not_loaded'>No tienes direcciones guardadas.</p>
+                    <p style={{marginBottom:"-100px"}} className='direcciones_not_loaded'>No tienes direcciones guardadas.</p>
                 ): (
                     direcciones.map((direccion:Direccion)=>(
                         <div key={direccion.internal_id} className='direccion_card' 

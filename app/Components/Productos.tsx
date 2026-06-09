@@ -13,6 +13,7 @@ import { useEffect, useState, useRef } from 'react';
 import ModalProducto from './ModalProducto'
 import ModalListas from './ModalListas';
 import toast from 'react-hot-toast';
+import { trackEvent } from '../lib/metaPixel';
 
 interface ProductosProps {
     productos: Entry<ProductoFields>[];
@@ -244,6 +245,9 @@ export default function Productos({productos = [], limit}: ProductosProps){
                             onClick={() => {
                                 setProducto({...producto.fields, contentful_product_id: producto.sys.id});
                                 setVisible(true);
+                                trackEvent("ExpandProduct", {
+                                    content_name: producto.fields?.nombre,
+                                });
                             }}
                         />
                         <div className="card-content">
@@ -252,7 +256,8 @@ export default function Productos({productos = [], limit}: ProductosProps){
                             <p className="card_precio_antes">{Number(producto.fields.precio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
                             <p className="card_precio">{Number((producto.fields.precio) * discountedTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>
                             <Button type='addButton'
-                                onClick={()=>addToShoppingBag({
+                                onClick={()=>{
+                                    addToShoppingBag({
                                     user_id: user ? user.internal_id : 0,
                                     contentful_product_id: producto.sys.id,
                                     image_URL: producto.fields.imagen?.fields.file.url,
@@ -265,10 +270,22 @@ export default function Productos({productos = [], limit}: ProductosProps){
                                     estatus_pedido: '',
                                     order_date: '',
                                     cantidad: 0
-                                })}
+                                });
+                                trackEvent("AddToCart", {
+                                    content_name: producto.fields.nombre,
+                                    value: producto.fields.precio,
+                                    currency: "MXN",
+                                });
+                            }}
                             ><ShoppingBag size={isMobile ? 9 : 15} />+</Button>
                             <Button type='addButton'
-                                onClick={()=>abrirModalListas(producto.sys.id)}
+                                onClick={()=>{
+                                    abrirModalListas(producto.sys.id);
+                                    trackEvent("AddToList", {
+                                        content_name: producto.fields.nombre,
+                                        value: producto.fields.precio,
+                                    });
+                                }}
                             >
                                 {savedProducts?.includes(producto.sys.id) ? <FaHeart size={isMobile ? 9 : 15}/> : <Heart size={isMobile ? 9 : 15} />}
                             </Button>

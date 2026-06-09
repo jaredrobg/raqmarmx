@@ -10,6 +10,7 @@ import { useAuth } from '../Context/AuthContext';
 import { LoginPage, SignupPage } from '../Profile/page';
 import { Direccion } from '../Elements/interface';
 import { useGlobal } from '../Context/GlobalContext';
+import {trackEvent} from '../lib/metaPixel';
 
 
 
@@ -130,7 +131,13 @@ export const ShoppingBagModule = () => {
                     <button className='quant_button' onClick={()=>updateQuantity(item.contentful_product_id, (item.quantity) + 1)}>+</button>
                     <Button type='closeButton' 
                       style={{position:"relative", top:"-10px"}}
-                      onClick={()=>removeFromShoppingBag(item.contentful_product_id)}
+                      onClick={()=>{
+                        removeFromShoppingBag(item.contentful_product_id);
+                        trackEvent("RemoveFromCart", {
+                          content_name: item.nombreProducto,
+                          value: item.precio,
+                        });
+                      }}
                     ><Trash2 size={15}/></Button>
                   </div>
               </div>
@@ -198,12 +205,14 @@ export const ShoppingBagModule = () => {
                   setLoginVisible(true);
                 }
                 else if(!direccionesVisible && user){
+                  trackEvent("BuyCart", {});
                   setDireccionesVisible(true);
                 } else {
                   if(Object.keys(direccionSelected).length === 0){
                     alert("Selecciona una direccion para continuar");
                     return;
                   }
+                  trackEvent("GoToCheckout", {});
                   handleCheckout();
                 }
               }
@@ -316,7 +325,13 @@ const ShoppingBag = () => {
                     <button className='quant_button' onClick={()=>updateQuantity(item.contentful_product_id, (item.quantity) + 1)}>+</button>
                     <Button type='closeButton' 
                       style={{position:"relative", top:"-10px"}}
-                      onClick={()=>removeFromShoppingBag(item.contentful_product_id)}
+                      onClick={()=>{
+                        removeFromShoppingBag(item.contentful_product_id);
+                        trackEvent("RemoveFromCart", {
+                          content_name: item.nombreProducto,
+                          value: item.precio,
+                        });
+                      }}
                     ><Trash2 size={15}/></Button>
                   </div>
               </div>
@@ -385,12 +400,14 @@ const ShoppingBag = () => {
                   setLoginVisible(true);
                 }
                 else if(!direccionesVisible && user){
+                  trackEvent("BuyCart", {});
                   setDireccionesVisible(true);
                 } else {
                   if(Object.keys(direccionSelected).length === 0){
                     alert("Selecciona una direccion para continuar");
                     return;
                   }
+                  trackEvent("GoToCheckout", {});
                   handleCheckout();
                 }
               }

@@ -13,6 +13,7 @@ import {client} from '../lib/contentful';
 import { ProductoFields } from '../lib/contentful';
 import ModalListas from './ModalListas';
 import toast from 'react-hot-toast';
+import { trackEvent } from '../lib/metaPixel';
 
 interface ModalProductoProps {
   producto: ProductoFields;
@@ -295,7 +296,7 @@ const ModalProducto = ({ producto, visible, onClose, onProductSaved, onProductRe
             <div style={styles.buttonContainer}>
               <Button
                 type="addButton"
-                onClick={() =>
+                onClick={() =>{
                   addToShoppingBag({
                     user_id: user ? user.internal_id : 0,
                     contentful_product_id: productoState.sys
@@ -319,14 +320,25 @@ const ModalProducto = ({ producto, visible, onClose, onProductSaved, onProductRe
                     estatus_pedido: '',
                     order_date: '',
                     cantidad: 0
-                  })
+                  });
+                  trackEvent("AddToCart", {
+                    content_name: productoState.fields?.nombre,
+                    value: productoState.fields?.precio,
+                  });
+                }
                 }
               >
                 <ShoppingBag size={16} />+
               </Button>
 
               {listButton && (
-                <Button type="addButton" onClick={() => abrirModalListas(productoId)}>
+                <Button type="addButton" onClick={() => {
+                  abrirModalListas(productoId);
+                  trackEvent("AddToList", {
+                    content_name: productoState.fields?.nombre,
+                    value: productoState.fields?.precio,
+                  });
+                  }}>
                   {savedProducts?.includes(productoId)
                     ? <FaHeart size={15} />
                     : <Heart size={15} />

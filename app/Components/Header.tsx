@@ -11,6 +11,7 @@ import { useShoppingBag } from '../Context/ShoppingBagContext';
 import SideMenu from './SideMenu'; 
 import { ShoppingBagModule} from '../ShoppingBag/page';
 import { useGlobal } from '../Context/GlobalContext';
+import { trackEvent } from '../lib/metaPixel';
 
 const Header = ()=>{
     const {user} = useAuth(); 
@@ -27,13 +28,19 @@ const Header = ()=>{
         <div className="Header_Container">
             <div className="nav_link">
                 {isMobile ? (
-                    <button onClick={()=>setSMVisible(!SMVisible)}
+                    <button onClick={()=>{
+                        setSMVisible(!SMVisible);
+                        trackEvent('MenuClick');
+                    }}
                         className="boton_Header"   
                         style={{padding: "10px"}}
                     ><Menu className="icon" size={20}/></button>
                 ): (
                     <div className="sub_nav_link">
-                        <button onClick={()=>setSMVisible(!SMVisible)}
+                        <button onClick={()=>{
+                            setSMVisible(!SMVisible);
+                            trackEvent('MenuClick');
+                        }}
                             className="boton_Header"   
                             style={{padding: "10px"}}
                         ><Menu className="icon" size={20}/></button>
@@ -55,7 +62,7 @@ const Header = ()=>{
             </Link>
 
             <div className="nav_link">
-                <button className='boton_Header_icon cart' onClick={()=>setSBVisible(true)} >
+                <button className='boton_Header_icon cart' onClick={()=>{setSBVisible(true); trackEvent('OpenCart');}} >
                     <ShoppingBag size={20} />
                     <span className="cart-badge" style={{display: totalCartItems > 0? '':'none'}}>{totalCartItems}</span>
                 </button>

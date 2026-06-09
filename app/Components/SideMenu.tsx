@@ -7,6 +7,7 @@ import { useState, useEffect, Children } from 'react';
 import { useRouter } from 'next/navigation';
 import { useGlobal } from '../Context/GlobalContext';
 import { client } from '../lib/contentful';
+import {trackEvent} from '../lib/metaPixel';
 
 
 
@@ -47,16 +48,19 @@ export default function SideMenu(){
     const onOpen= (arg:string)=>{
         switch(arg){
             case 'marca':
+                trackEvent('OpenBrandsMenu');
                 setOpenMarcas(true);
                 setOpenCategorias(false);
                 setOpenTemporadas(false);
                 break;
             case 'temporada':
+                trackEvent('OpenSeasonsMenu');
                 setOpenTemporadas(true);
                 setOpenMarcas(false);
                 setOpenCategorias(false);
                 break;
             case 'categoria':
+                trackEvent('OpenCategoriesMenu');
                 setOpenCategorias(true);
                 setOpenMarcas(false);
                 setOpenTemporadas(false);
@@ -84,7 +88,7 @@ export default function SideMenu(){
                     </div>
                     <div className='SideMenu_section'>
                         <Link href='/HomePage' className='SideMenu_option' onClick={onClose}>Inicio</Link>
-                        <Link href='/ProductosPage' className='SideMenu_option' onClick={onClose}>Todos Los Productos</Link>
+                        <Link href='/ProductosPage' className='SideMenu_option' onClick={()=>{onClose(); trackEvent('OpenAllProducts');}}>Todos Los Productos</Link>
                         <div className='SideMenu_option' onClick={()=>onOpen('marca')}>
                             Marca <span><ChevronRight size={15} /></span>
                             <MenuMarca visible={openMarcas} onClose={onClose}/>
@@ -122,12 +126,12 @@ export default function SideMenu(){
                             {user? `${user.name} ${user.lastname}` : "Iniciar Sesion"}
                         </Link>
                         {user && user.level > 1 && <Link href='/AdminPage' onClick={onClose} prefetch={false} className='SideMenu_option'>Admin</Link>}
-                        <Link href='/ShoppingBag' className='SideMenu_option' onClick={onClose}>Carrito</Link>
+                        <Link href='/ShoppingBag' className='SideMenu_option' onClick={()=>{onClose(); trackEvent('OpenCart');}}>Carrito</Link>
                         <div className='line'></div>
                     </div>
                     <div className='SideMenu_section'>
                         <Link href='/HomePage' className='SideMenu_option' onClick={onClose}>Inicio</Link>
-                        <Link href='/ProductosPage' className='SideMenu_option' onClick={onClose}>Todos Los Productos</Link>
+                        <Link href='/ProductosPage' className='SideMenu_option' onClick={()=>{onClose(); trackEvent('OpenAllProducts');}}>Todos Los Productos</Link>
                         <div className='SideMenu_option' onClick={()=>onOpen('marca')}>
                             Marca <span><ChevronRight size={15} /></span>
                             <MenuMarca visible={openMarcas} onClose={onClose}/>

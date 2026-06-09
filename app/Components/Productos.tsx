@@ -141,15 +141,22 @@ export default function Productos({productos = [], limit}: ProductosProps){
     const [savedProducts, setSavedProducts] = useState<string[]>([]);
     const loadMoreRef = useRef<HTMLDivElement>(null);
 
-    useEffect(()=>{
-        const handleResize = ()=>{
-            setIsMobile(window.innerWidth < 768);
-            setSmallDesk(window.innerWidth < 1150);
-        }
+    useEffect(() => {
+        let timeout: NodeJS.Timeout;
+        const handleResize = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                setIsMobile(window.innerWidth < 768);
+                setSmallDesk(window.innerWidth < 1150);
+            }, 150); // espera 150ms antes de actualizar
+        };
         handleResize();
         window.addEventListener("resize", handleResize);
-        return ()=> window.removeEventListener("resize", handleResize);
-    },[]);
+        return () => {
+            window.removeEventListener("resize", handleResize);
+            clearTimeout(timeout);
+        };
+    }, []);
 
     const onClose = ()=>{
         setVisible(false);

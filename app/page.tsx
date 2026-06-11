@@ -3,7 +3,7 @@ import { getProductos, ProductoFields } from "./lib/contentful";
 import { Entry } from "contentful";
 import './page.css';
 
-export const revalidate = 60; // Revalidar cada 60 segundos
+export const revalidate = 43200; // Revalidar cada 12 horas
 
 interface HomePageProps {
   productos: Entry<ProductoFields>[];

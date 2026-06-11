@@ -18,7 +18,7 @@ import {trackEvent} from '../lib/metaPixel';
 // ------------------ Modal reutilizable ------------------
 export const ShoppingBagModule = () => {
   const {user} = useAuth();
-  const { cartList, updateQuantity, removeFromShoppingBag, clearShoppingBag, totalCarrito, discountedTotal } = useShoppingBag();
+  const { cartList, updateQuantity, removeFromShoppingBag, clearShoppingBag, totalCarrito, discountedTotal, validarInventario } = useShoppingBag();
   const [direccionesVisible, setDireccionesVisible] = useState(false);
   const [direccionSelected, setDireccionSelected] = useState({}as Direccion);
   const [mockVisible, setMockVisible] = useState(false);
@@ -201,7 +201,12 @@ export const ShoppingBagModule = () => {
             >{direccionesVisible?"Volver":"Vaciar Carrito"}</Button>
           <Button type={(cartList.length===0 || cartList.some(item => item.quantity > item.disponible)) ? 'disabled':'green'} 
             onClick={
-              ()=>{
+              async ()=>{
+                const inventarioValido = await validarInventario();
+                if (!inventarioValido) {
+                  alert("Uno o más productos ya no tienen existencias.");
+                  return;
+                }
                 if(!user){
                   setLoginVisible(true);
                 }
@@ -231,7 +236,7 @@ export const ShoppingBagModule = () => {
 // ------------------ Página / screen ------------------
 const ShoppingBag = () => {
   const {user} = useAuth();
-  const { cartList, updateQuantity, removeFromShoppingBag, clearShoppingBag, totalCarrito, discountedTotal } = useShoppingBag();
+  const { cartList, updateQuantity, removeFromShoppingBag, clearShoppingBag, totalCarrito, discountedTotal, validarInventario } = useShoppingBag();
   const [direccionesVisible, setDireccionesVisible] = useState(false);
   const [direccionSelected, setDireccionSelected] = useState({} as Direccion);
   const [mockVisible, setMockVisible] = useState(false);
@@ -397,7 +402,12 @@ const ShoppingBag = () => {
             >{direccionesVisible?"Volver":"Vaciar Carrito"}</Button>
           <Button type={(cartList.length===0 || cartList.some(item => item.quantity > item.disponible)) ? 'disabled':'green'} 
             onClick={
-              ()=>{
+              async()=>{
+                const inventarioValido = await validarInventario();
+                if (!inventarioValido) {
+                  alert("Uno o más productos ya no tienen existencias.");
+                  return;
+                }
                 if(!user){
                   setLoginVisible(true);
                 }

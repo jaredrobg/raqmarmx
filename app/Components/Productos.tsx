@@ -174,6 +174,7 @@ export default function Productos({productos = [], limit}: ProductosProps){
     const disponibles = lista.filter(producto => producto.fields.cantidad > 0);
 
     useEffect(() => {
+        console.log("Productos disponibles para mostrar:", disponibles[0]);
         const loadConst = isMobile ? 8 : smallDesk ? 9 : 12;
         const observer = new IntersectionObserver(
             (entries) => {

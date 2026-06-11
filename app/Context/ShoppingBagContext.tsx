@@ -20,6 +20,7 @@ interface ShoppingBagContextType {
   totalCarrito: totalCarrito;
   discountedTotal: number;
   setGlobalDiscount: (discount: number) => void;
+  validarInventario: () => Promise<boolean>;
 };
 
 const ShoppingBagContext = createContext<ShoppingBagContextType | undefined>(undefined);
@@ -202,8 +203,50 @@ export const ShoppingBagProvider = ({ children }: { children: ReactNode }) => {
   
   const discountedTotal = (1 - globalDiscount / 100);
 
+  const validarInventario = async () => {
+
+    const updatedCart = await Promise.all(
+      cartList.map(async (item) => {
+        try {
+          const entry: { fields: PedidoItem } =
+            await client.getEntry(item.contentful_product_id);
+
+          return {
+            ...item,
+            disponible: entry?.fields?.cantidad || 0,
+          };
+        } catch (err) {
+          console.error(err);
+
+          return {
+            ...item,
+            disponible: 0,
+          };
+        }
+      })
+    );
+
+    setCartList(updatedCart);
+
+    return updatedCart.every(
+      item => item.quantity <= item.disponible
+    );
+  };
+
   return (
-    <ShoppingBagContext.Provider value={{ cartList, addToShoppingBag, removeFromShoppingBag, clearShoppingBag, updateQuantity, totalCarrito, discountedTotal, setGlobalDiscount }}>
+    <ShoppingBagContext.Provider 
+      value={{ 
+        cartList, 
+        addToShoppingBag, 
+        removeFromShoppingBag, 
+        clearShoppingBag, 
+        updateQuantity, 
+        totalCarrito, 
+        discountedTotal, 
+        setGlobalDiscount, 
+        validarInventario 
+        }}
+      >
       {children}
     </ShoppingBagContext.Provider>
   );

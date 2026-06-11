@@ -3,7 +3,7 @@ import { Entry } from "contentful";
 import ProductosPage from "./ProductosPageClient";
 
 
-export const revalidate = 60; // Revalidar cada 60 segundos
+export const revalidate = 43200; // Revalidar cada 12 horas
 
 
 export default async function ProductosPageServer() {

@@ -9,7 +9,7 @@ import { LuAward } from "react-icons/lu";
 import Link from 'next/link';
 
 
-export const revalidate = 60; // Revalidar cada 60 segundos
+export const revalidate = 43200; // Revalidar cada 12 horas
 
 interface HomePageProps {
   productos: Entry<ProductoFields>[];

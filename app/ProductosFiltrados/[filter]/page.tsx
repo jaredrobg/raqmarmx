@@ -5,7 +5,7 @@ import { Entry } from "contentful";
 
 export const dynamic = 'force-dynamic';
 
-export const revalidate = 60; // Revalidar cada 60 segundos
+export const revalidate = 43200; // Revalidar cada 12 horas
 
 interface Props {
   params: Promise<{ filter: string }>;

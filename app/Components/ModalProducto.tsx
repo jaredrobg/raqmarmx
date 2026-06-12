@@ -5,7 +5,7 @@ import { Button } from '../Elements/Elements';
 import { useState, useEffect, useRef } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { createPortal } from 'react-dom';
-import { ShoppingBag, Heart } from 'lucide-react';
+import { ShoppingBag, Heart, Share2} from 'lucide-react';
 import { FaHeart } from "react-icons/fa";
 import { useShoppingBag } from '../Context/ShoppingBagContext';
 import { useAuth } from '../Context/AuthContext';
@@ -178,6 +178,23 @@ const ModalProducto = ({ producto, visible, onClose, onProductSaved, onProductRe
 
   const productoId = productoState.sys ? productoState.sys.id : productoState.contentful_product_id;
 
+  const handleShare = async () => {
+    const modelo = encodeURIComponent(productoState.fields?.modelo || '');
+    const url = `https://raqmarmx.com/ProductosPage?search=${modelo}`;
+
+    if (navigator.share) {
+        // Mobile: abre el menú nativo de compartir
+        await navigator.share({
+            title: productoState.fields?.nombre || 'Raqmar',
+            url,
+        });
+    } else {
+        // Desktop: copia al portapapeles
+        await navigator.clipboard.writeText(url);
+        toast.success('Link copiado al portapapeles');
+    }
+};
+
   return createPortal(
     <div
       className="ModalProducto_overlay"
@@ -345,6 +362,16 @@ const ModalProducto = ({ producto, visible, onClose, onProductSaved, onProductRe
                   }
                 </Button>
               )}
+
+              <Button type="addButton" onClick={()=>{
+                handleShare();
+                trackEvent("ShareProduct", {
+                  content_name: productoState.fields?.nombre,
+                  value: productoState.fields?.precio,
+                });
+              }}>
+                <Share2 size={15} />
+              </Button>
             </div>
 
             <ModalListas

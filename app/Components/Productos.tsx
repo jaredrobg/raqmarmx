@@ -135,22 +135,30 @@ export default function Productos({productos = [], limit}: ProductosProps){
     const [producto, setProducto] = useState<ProductoFields>({} as ProductoFields);
     const [isMobile, setIsMobile] = useState(false);
     const [smallDesk, setSmallDesk] = useState(false);
-    const [visibleCount, setVisibleCount] = useState(isMobile? 10: smallDesk? 13 : 15);
+    const [visibleCount, setVisibleCount] = useState(0); // 0 = "aún no inicializado"
     const [modalListasVisible, setModalListasVisible] = useState(false);
     const [selectedProductoId, setSelectedProductoId] = useState<string | null>(null);
     const [savedProducts, setSavedProducts] = useState<string[]>([]);
     const loadMoreRef = useRef<HTMLDivElement>(null);
 
+    const pageSize = isMobile ? 8 : smallDesk ? 12 : 15;
+
+    // Calcula tamaño de pantalla Y visibleCount juntos, en el mismo efecto
     useEffect(() => {
+        const mobile = window.innerWidth < 768;
+        const small = window.innerWidth < 1200;
+        setIsMobile(mobile);
+        setSmallDesk(small);
+        setVisibleCount(mobile ? 8 : small ? 12 : 15);
+
         let timeout: NodeJS.Timeout;
         const handleResize = () => {
             clearTimeout(timeout);
             timeout = setTimeout(() => {
                 setIsMobile(window.innerWidth < 768);
-                setSmallDesk(window.innerWidth < 1150);
-            }, 150); // espera 150ms antes de actualizar
+                setSmallDesk(window.innerWidth < 1200);
+            }, 150);
         };
-        handleResize();
         window.addEventListener("resize", handleResize);
         return () => {
             window.removeEventListener("resize", handleResize);
@@ -169,26 +177,29 @@ export default function Productos({productos = [], limit}: ProductosProps){
 
     let lista = safeProductos;
     if(limit){
-        lista = lista.slice(0, isMobile ? limit: smallDesk ? limit + 6 : limit + 8)
+        lista = lista.slice(0, isMobile ? limit: smallDesk ? limit + 5 : limit + 9);
     }
     const disponibles = lista.filter(producto => producto.fields.cantidad > 0);
 
     useEffect(() => {
-        console.log("Productos disponibles para mostrar:", disponibles[0]);
-        const loadConst = isMobile ? 8 : smallDesk ? 9 : 12;
         const observer = new IntersectionObserver(
             (entries) => {
                 if (entries[0].isIntersecting) {
-                    setVisibleCount((prev) => Math.min(prev + loadConst, disponibles.length));
+                    setVisibleCount((prev) => Math.min(prev + pageSize, disponibles.length));
                 }
             },
             { threshold: 1 }
         );
         if (loadMoreRef.current) observer.observe(loadMoreRef.current);
         return () => observer.disconnect();
-    }, [disponibles.length]);
+    }, [disponibles.length, pageSize]);
 
-    const productosVisibles: Entry<ProductoFields>[] = disponibles.slice(0, isMobile ? visibleCount : visibleCount + 5);
+    // Si visibleCount aún no se calculó (0), no renderiza nada todavía
+    const productosVisibles: Entry<ProductoFields>[] = visibleCount > 0 
+        ? disponibles.slice(0, visibleCount) 
+        : [];
+
+    // ... resto igual
 
     useEffect(() => {
         const timer = setTimeout(() => {

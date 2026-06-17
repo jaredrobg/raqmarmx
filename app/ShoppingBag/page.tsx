@@ -163,7 +163,8 @@ export const ShoppingBagModule = () => {
             </p>
             {totalCarrito.costoEnvio > 100 && 
             <span style={{display: "block", color:"#292", fontSize:"10px", textAlign:"center"}}>
-              Realiza un pedido de $2,000 para tener envio GRATIS!
+              Realiza un pedido de $2,000 para tener envio GRATIS!<br/>
+              te falta: {(2000 - (totalCarrito.totalPrecio - totalCarrito.costoEnvio)).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
               </span>}
             <p>
               Total a Pagar: {totalCarrito.totalPrecio.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
@@ -363,7 +364,8 @@ const ShoppingBag = () => {
             </p>
             {totalCarrito.costoEnvio > 100 && 
             <span style={{display: "block", color:"#292", fontSize:"10px", textAlign:"center"}}>
-              Realiza un pedido de $2,000 para tener envio GRATIS!
+              Realiza un pedido de $2,000 para tener envio GRATIS! <br/>
+              te falta: {(2000 - totalCarrito.totalPrecio).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}
               </span>}
             <p>
               Total a Pagar: {totalCarrito.totalPrecio.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}

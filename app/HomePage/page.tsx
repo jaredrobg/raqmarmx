@@ -53,7 +53,7 @@ export default async function HomePage({ productos }: HomePageProps) {
             <Productos productos={soloFragancias} limit={12}/>
 
             <div className='ver_mas'>
-                 <Link href="/ProductosPage">
+                <Link href="/ProductosPage">
                     Todos los Productos
                 </Link>
             </div>

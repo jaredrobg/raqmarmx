@@ -1839,6 +1839,10 @@ a{
   transform: translateY(-5px);
   box-shadow: 0 12px 28px rgba(0,0,0,0.12);
 }
+.ver_mas a{
+  height: 100%;
+  width: 100%;
+}
 
 @media(min-width: 700px){
   .ver_mas{

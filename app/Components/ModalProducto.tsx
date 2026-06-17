@@ -14,6 +14,8 @@ import { ProductoFields } from '../lib/contentful';
 import ModalListas from './ModalListas';
 import toast from 'react-hot-toast';
 import { trackEvent } from '../lib/metaPixel';
+import { useGlobal } from '../Context/GlobalContext';
+
 
 interface ModalProductoProps {
   producto: ProductoFields;
@@ -70,6 +72,8 @@ const ModalProducto = ({ producto, visible, onClose, onProductSaved, onProductRe
   const [modalListasVisible, setModalListasVisible] = useState(false);
   const [selectedProductoId, setSelectedProductoId] = useState<string | null>(null);
   const [savedProducts, setSavedProducts] = useState<string[]>([]);
+  const {SBvisible, setSBVisible} = useGlobal();
+  const [comprarLoading, setComprarLoading] = useState(false);
 
   const images = [
     productoState.fields?.imagen?.fields.file.url,
@@ -371,6 +375,47 @@ const ModalProducto = ({ producto, visible, onClose, onProductSaved, onProductRe
                 });
               }}>
                 <Share2 size={15} />
+              </Button>
+            </div>
+            <div style={styles.buttonContainer}>
+              <Button type={comprarLoading ? "disabled" : "primary"}
+                onClick={() =>{
+                    setComprarLoading(true);
+                    addToShoppingBag({
+                      user_id: user ? user.internal_id : 0,
+                      contentful_product_id: productoState.sys
+                        ? productoState.sys.id
+                        : productoState.contentful_product_id,
+                      image_URL: productoState.fields
+                        ? productoState.fields.imagen?.fields.file.url
+                        : productoState.image_URL,
+                      modelo: productoState.fields
+                        ? productoState.fields.modelo
+                        : productoState.modelo,
+                      nombreProducto: productoState.fields
+                        ? productoState.fields.nombre
+                        : productoState.nombre,
+                      precio: productoState.fields
+                        ? Number(productoState.fields.precio * discountedTotal)
+                        : Number(productoState.precio * discountedTotal),
+                      quantity: 1,
+                      added_at: fecha,
+                      disponible: productoState.fields ? productoState.fields.cantidad : 0,
+                      estatus_pedido: '',
+                      order_date: '',
+                      cantidad: 0
+                    });
+                    trackEvent("BuyNow", {
+                      content_name: productoState.fields?.nombre,
+                      value: productoState.fields?.precio,
+                    });
+                    onClose();
+                    setSBVisible(true);
+                    setComprarLoading(false);
+                  }
+              }
+              >
+                {comprarLoading ? "Agregando..." : "Comprar ahora"}
               </Button>
             </div>
 

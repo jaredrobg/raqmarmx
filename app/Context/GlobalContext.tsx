@@ -17,7 +17,7 @@ const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
     const [SMVisible, setSMVisible] = useState(false);
     const [SBvisible, setSBVisible] = useState(false);
-    const [isMobile, setIsMobile] = useState(false); 
+    const [isMobile, setIsMobile] = useState(true); 
 
 
     useEffect(()=>{

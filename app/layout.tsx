@@ -27,9 +27,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Raqmar",
-  description: "Tienda online de productos para la imagen personal y el estilo",
+export const metadata = {
+    title: {
+        default: "Raqmar",
+        template: "%s | Raqmar", // ← así cada página solo pone su título y se agrega "| Raqmar" automático
+    },
+    description: "Fragancias y lentes solares de calidad al mejor precio en México.",
+    metadataBase: new URL("https://raqmarmx.com"),
 };
 
 export default function RootLayout({

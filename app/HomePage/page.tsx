@@ -14,6 +14,15 @@ export const revalidate = 43200; // Revalidar cada 12 horas
 interface HomePageProps {
   productos: Entry<ProductoFields>[];
 }
+const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "Raqmar",
+    "url": "https://raqmarmx.com",
+    "description": "Fragancias y lentes solares de calidad al mejor precio.",
+    "currenciesAccepted": "MXN",
+    "priceRange": "$$",
+};
 
 export default async function HomePage({ productos }: HomePageProps) {
     const productosobt: Entry<ProductoFields>[] = await getProductos();
@@ -22,6 +31,10 @@ export default async function HomePage({ productos }: HomePageProps) {
     
     return(
         <div>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
             <FadeIn direction='down'>
                 <HeadImages />
             </FadeIn>

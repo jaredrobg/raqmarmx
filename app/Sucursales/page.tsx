@@ -1,5 +1,18 @@
 import '../page.css';
 
+export const metadata = {
+    title: "Sucursales | Raqmar — Fragancias y Lentes Solares",
+    description: "Encuentra las mejores fragancias y lentes solares al mejor precio en Raqmar.",
+    openGraph: {
+        title: "Sucursales | Raqmar",
+        description: "Fragancias y lentes solares de calidad.",
+        url: "https://raqmarmx.com/Sucursales",
+        siteName: "Raqmar",
+        images: [{ url: "https://raqmarmx.com/og-image.jpg" }],
+        type: "website",
+    },
+};
+
 
 export default function Sucursales(){
 

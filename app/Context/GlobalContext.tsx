@@ -17,22 +17,20 @@ const GlobalContext = createContext<GlobalContextType | undefined>(undefined);
 export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
     const [SMVisible, setSMVisible] = useState(false);
     const [SBvisible, setSBVisible] = useState(false);
-    const [isMobile, setIsMobile] = useState(true); 
-
-
-    useEffect(()=>{
-        if (!isMobile){
-            const handleResize = ()=>{
-                setIsMobile(window.innerWidth < 768);
-            }
-            handleResize();
-            window.addEventListener("resize", handleResize);
-
-            return ()=> window.removeEventListener("resize", handleResize);
+    const [isMobile, setIsMobile] = useState(() => {
+        if (typeof window !== 'undefined') {
+            return window.innerWidth < 768;
         }
-    },[]);
-  
+        return false;
+    });
 
+    useEffect(() => {
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+        window.addEventListener("resize", handleResize);
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
 
     return (
         <GlobalContext.Provider value={{ SMVisible, setSMVisible, SBvisible, setSBVisible, isMobile, setIsMobile }}>

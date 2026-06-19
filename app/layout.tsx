@@ -29,7 +29,7 @@ const geistMono = Geist_Mono({
 
 export const metadata = {
     title: {
-        default: "Raqmar",
+        default: "Raqmar | Fragancias, Perfumes y moda en México",
         template: "%s | Raqmar", // ← así cada página solo pone su título y se agrega "| Raqmar" automático
     },
     description: "Fragancias y lentes solares de calidad al mejor precio en México.",
@@ -42,7 +42,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com"></link>
         <link rel="preconnect" href="https://fonts.gstatic.com"></link>

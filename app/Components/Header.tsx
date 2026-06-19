@@ -50,6 +50,7 @@ const Header = ()=>{
                 )}
             </div>
             <Link href='/HomePage'  className="nav_link">
+            <h1>
                     <Image
                         className="logo_image"
                         src="/Images/logo.png"
@@ -59,6 +60,7 @@ const Header = ()=>{
                         style={{ objectFit: "contain" }}
                         priority
                     />
+            </h1>
             </Link>
 
             <div className="nav_link">

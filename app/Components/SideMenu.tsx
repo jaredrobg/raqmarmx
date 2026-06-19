@@ -29,7 +29,7 @@ export default function SideMenu(){
 
 
     
-    const mensaje =  "Hola! vengo de la pagina de Raqmar y me gustaría obtener más información sobre sus productos.";
+    const mensaje =  "Hola! vengo de la página de Raqmar y me gustaría obtener más información sobre sus productos.";
     const numero = "523327652904";
 
     useEffect(()=>{
@@ -94,7 +94,7 @@ export default function SideMenu(){
                             <MenuMarca visible={openMarcas} onClose={onClose}/>
                         </div>
                         <div className='SideMenu_option' onClick={()=>onOpen('categoria')}>
-                            Categoria <span><ChevronRight size={15} /></span>
+                            Categoría <span><ChevronRight size={15} /></span>
                             <MenuCategoria visible={openCategorias} onClose={onClose}/>
                         </div>
                         <div className='SideMenu_option' onClick={()=>onOpen('temporada')}>
@@ -137,7 +137,7 @@ export default function SideMenu(){
                             <MenuMarca visible={openMarcas} onClose={onClose}/>
                         </div>
                         <div className='SideMenu_option' onClick={()=>onOpen('categoria')}>
-                            Categoria <span><ChevronRight size={15} /></span>
+                            Categoría <span><ChevronRight size={15} /></span>
                             <MenuCategoria visible={openCategorias} onClose={onClose}/>
                         </div>
                         <div className='SideMenu_option' onClick={()=>onOpen('temporada')}>

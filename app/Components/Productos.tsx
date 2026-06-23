@@ -292,7 +292,7 @@ export default function Productos({productos = [], limit}: ProductosProps){
                                 });
                                 trackEvent("AddToCart", {
                                     content_name: producto.fields.nombre,
-                                    value: producto.fields.precio,
+                                    value: producto.fields.precio * discountedTotal,
                                     currency: "MXN",
                                 });
                             }}
@@ -302,7 +302,7 @@ export default function Productos({productos = [], limit}: ProductosProps){
                                     abrirModalListas(producto.sys.id);
                                     trackEvent("AddToList", {
                                         content_name: producto.fields.nombre,
-                                        value: producto.fields.precio,
+                                        value: producto.fields.precio * discountedTotal,
                                     });
                                 }}
                             >

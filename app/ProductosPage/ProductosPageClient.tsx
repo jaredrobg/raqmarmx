@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, SlidersHorizontal, X } from 'lucide-react';
 import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
+import {useShoppingBag} from '../Context/ShoppingBagContext';
 
 interface HomePageProps {
     productos: Entry<ProductoFields>[];
@@ -25,6 +26,7 @@ function ProductosPageInner({ productos }: HomePageProps) {
     const router = useRouter();
     const inputRef = useRef<HTMLInputElement>(null);
     const debounceRef = useRef<NodeJS.Timeout | null>(null);
+    const {discountedTotal} = useShoppingBag();
 
     const [searchTerm, setSearchTerm] = useState(
         searchParams.get("search") || ""
@@ -123,8 +125,8 @@ function ProductosPageInner({ productos }: HomePageProps) {
 
         // Filtro precio
         const precio = Number(producto.fields.precio);
-        if (filtros.precioDesde !== "" && precio < Number(filtros.precioDesde)) return false;
-        if (filtros.precioHasta !== "" && precio > Number(filtros.precioHasta)) return false;
+        if (filtros.precioDesde !== "" && (precio * discountedTotal) < Number(filtros.precioDesde)) return false;
+        if (filtros.precioHasta !== "" && (precio * discountedTotal) > Number(filtros.precioHasta)) return false;
 
         // Filtro material (solo si Lente Solar está seleccionado)
         if (filtros.categorias.includes("Lente Solar") && filtros.material.length > 0) {
